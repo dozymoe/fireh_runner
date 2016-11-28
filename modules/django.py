@@ -23,7 +23,6 @@ class Plugin(object):
         self.helper.setup_virtualenv()
 
         project, variant = self.helper.setup_project_env(project, variant)
-        os.chdir(os.path.join(self.config['work_dir'], project))
 
         binargs = ['django-admin'] + list(args)
         os.execvp(binargs[0], binargs)
