@@ -61,5 +61,7 @@ def initialize(config, argparser, helper):
     add_commands(
         argparser,
         [
+            mod.django_admin,
+            mod.django_manage,
             mod.django_script,
         ])
