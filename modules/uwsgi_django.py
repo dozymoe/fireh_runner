@@ -12,14 +12,23 @@ class Plugin(object):
         self.helper = helper
 
 
-    def uwsgi(self, project=None, variant=None, *args):
+    def uwsgi(self, *args):
+        if len(args) == 1:
+            args = shlex.split(args[0])
+
+        self.helper.setup_virtualenv()
+
+        binargs = ['uwsgi'] + list(args)
+        os.execvp(binargs[0], binargs)
+
+
+    def uwsgi_run(self, project=None, variant=None, *args):
         if len(args) == 1:
             args = shlex.split(args[0])
 
         self.helper.setup_virtualenv()
 
         project, variant = self.helper.setup_project_env(project, variant)
-        os.chdir(os.path.join(self.config['work_dir'], project))
 
         config = self.config.get('configuration', {})
         config = config.get(variant, {})
@@ -31,7 +40,7 @@ class Plugin(object):
         binargs = [
             'uwsgi',
             '--module=%s.wsgi:application' % project,
-            '--socket=' + socket_path,
+            '--socket=' + os.path.realpath(socket_path),
             '--chmod-socket',
             '--max-requests=%i' % config.get('max_requests', 5000),
             '--workers=%i' % config.get('worker_count', 1),
@@ -41,11 +50,17 @@ class Plugin(object):
         if variant in ('dev', 'devel', 'development'):
             binargs.append('--honour-stdin')
 
-        binargs += list(args)
+        os.chdir(os.path.join(self.config['work_dir'], project))
 
+        binargs += list(args)
         os.execvp(binargs[0], binargs)
 
 
 def initialize(config, argparser, helper):
     mod = Plugin(config, helper)
-    add_commands(argparser, [mod.uwsgi])
+    add_commands(
+        argparser,
+        [
+            mod.uwsgi,
+            mod.uwsgi_run,
+        ])
