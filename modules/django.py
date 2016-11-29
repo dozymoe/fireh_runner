@@ -24,6 +24,12 @@ class Plugin(object):
 
         project, variant = self.helper.setup_project_env(project, variant)
 
+        config = self.config.get('configuration', {})
+        config = config.get(variant, {})
+        config = config.get(project, {})
+
+        self.helper.setup_shell_env(config.get('shell_env', {}))
+
         binargs = ['django-admin'] + list(args)
         os.execvp(binargs[0], binargs)
 
@@ -35,9 +41,15 @@ class Plugin(object):
         self.helper.setup_virtualenv()
 
         project, variant = self.helper.setup_project_env(project, variant)
-        os.chdir(os.path.join(self.config['work_dir'], project))
+
+        config = self.config.get('configuration', {})
+        config = config.get(variant, {})
+        config = config.get(project, {})
+
+        self.helper.setup_shell_env(config.get('shell_env', {}))
 
         binargs = ['python', 'manage.py'] + list(args)
+        os.chdir(os.path.join(self.config['work_dir'], project))
         os.execvp(binargs[0], binargs)
 
 
@@ -48,10 +60,16 @@ class Plugin(object):
         self.helper.setup_virtualenv()
 
         project, variant = self.helper.setup_project_env(project, variant)
-        os.chdir(os.path.join(self.config['work_dir'], project))
+
+        config = self.config.get('configuration', {})
+        config = config.get(variant, {})
+        config = config.get(project, {})
+
+        self.helper.setup_shell_env(config.get('shell_env', {}))
         self.setup_django_settings(project, variant)
 
         binargs = ['python'] + list(args)
+        os.chdir(os.path.join(self.config['work_dir'], project))
         os.execvp(binargs[0], binargs)
 
 

@@ -34,6 +34,8 @@ class Plugin(object):
         config = config.get(variant, {})
         config = config.get(project, {})
 
+        self.helper.setup_shell_env(config.get('shell_env', {}))
+
         socket_path = config.get('socket_path', '/tmp/%s-%s-%s.sock' %\
                 (self.config['package_name'], project, variant))
 

@@ -3,6 +3,7 @@
 import os
 from argh import dispatch
 from argparse import ArgumentParser
+from collections import Mapping, Sequence
 
 # see http://stackoverflow.com/a/67692
 from importlib.machinery import SourceFileLoader
@@ -36,6 +37,11 @@ class Helper(object):
         return project, variant
 
 
+    def setup_shell_env(self, data):
+        for key, value in self._flatten_dict('', data):
+            os.environ[key] = value
+
+
     def setup_virtualenv(self):
         os.environ['PATH'] = ':'.join([
             os.path.join(
@@ -50,6 +56,25 @@ class Helper(object):
             'lib',
             'python' + self.config.get('python_version', '3.4'),
             'site-packages')
+
+
+    @staticmethod
+    def _flatten_dict(prefix, data):
+        # see http://stackoverflow.com/a/6036037
+        for key in data:
+            item = data[key]
+            if prefix:
+                new_prefix = prefix + '_' + key.upper()
+            else:
+                new_prefix = key.upper()
+
+            if isinstance(item, Mapping):
+                for child_item in Helper._flatten_dict(new_prefix, item):
+                    yield child_item
+            elif isinstance(item, Sequence):
+                yield (new_prefix, ';'.join(item))
+            else:
+                yield (new_prefix, item)
 
 
 work_dir = os.path.dirname((os.path.abspath(__file__)))
