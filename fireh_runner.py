@@ -68,10 +68,15 @@ class Helper(object):
             else:
                 new_prefix = key.upper()
 
+            try:
+                is_str = isinstance(item, basestring)
+            except NameError:
+                is_str = isinstance(item, str)
+
             if isinstance(item, Mapping):
                 for child_item in Helper._flatten_dict(new_prefix, item):
                     yield child_item
-            elif isinstance(item, Sequence):
+            elif isinstance(item, Sequence) and not is_str:
                 yield (new_prefix, ';'.join(item))
             else:
                 yield (new_prefix, item)
