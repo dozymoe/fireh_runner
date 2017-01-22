@@ -1,27 +1,19 @@
+"""Waf module.
+
+Website: http://waf.io
+"""
 import os
 import shlex
-from argh import add_commands
 
-class Plugin(object):
+def waf(loader, *args):
+    """Build project."""
+    if len(args) == 1:
+        args = shlex.split(args[0])
 
-    config = None
-    helper = None
+    loader.setup_virtualenv()
 
-    def __init__(self, config, helper):
-        self.config = config
-        self.helper = helper
-
-
-    def waf(self, *args):
-        if len(args) == 1:
-            args = shlex.split(args[0])
-
-        self.helper.setup_virtualenv()
-
-        binargs = ['waf'] + list(args)
-        os.execvp(binargs[0], binargs)
+    binargs = ['waf'] + list(args)
+    os.execvp(binargs[0], binargs)
 
 
-def initialize(config, argparser, helper):
-    mod = Plugin(config, helper)
-    add_commands(argparser, [mod.waf])
+commands = (waf,)

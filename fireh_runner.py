@@ -1,26 +1,54 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
-import os
-from argh import dispatch
 from argparse import ArgumentParser
 from collections import Mapping, Sequence
-
-# see http://stackoverflow.com/a/67692
-from importlib.machinery import SourceFileLoader
-
 from json import load as json_loadf
+import inspect
+import os
+import sys
 
-def load_module(name, runner_dir):
-    return SourceFileLoader('runner.' + name, os.path.join(runner_dir,
-            'modules', name + '.py')).load_module()
+def flatten_dict(prefix, data):
+    # see http://stackoverflow.com/a/6036037
+    for key in data:
+        item = data[key]
+        if prefix:
+            new_prefix = prefix + '_' + key.upper()
+        else:
+            new_prefix = key.upper()
+
+        try:
+            is_str = isinstance(item, basestring)
+        except NameError:
+            is_str = isinstance(item, str)
+
+        if isinstance(item, Mapping):
+            for child_item in flatten_dict(new_prefix, item):
+                yield child_item
+        elif isinstance(item, Sequence) and not is_str:
+            yield (new_prefix, ';'.join(item))
+        else:
+            yield (new_prefix, item)
 
 
-class Helper(object):
+def load_module(module):
+    """Load a python module by its name."""
+    try:
+        import importlib
+        return importlib.import_module(module)
+    except ImportError:
+        sys.stderr.write('Unable to load the module: %s.\n' % module)
+        exit(-1)
+
+
+class Loader(object):
 
     config = None
 
+    _modules = None
+
     def __init__(self, config):
         self.config = config
+        self._modules = []
 
 
     def setup_project_env(self, project=None, variant=None):
@@ -38,7 +66,7 @@ class Helper(object):
 
 
     def setup_shell_env(self, data):
-        for key, value in self._flatten_dict('', data):
+        for key, value in flatten_dict('', data):
             os.environ[key] = value
 
 
@@ -46,56 +74,98 @@ class Helper(object):
         os.environ['PATH'] = ':'.join([
             os.path.join(
                 self.config['work_dir'],
-                self.config.get('virtualenv_dir', '.virtualenv'),
-                'bin'),
-            os.environ['PATH']])
+                self.config['virtualenv_dir'],
+                'bin'
+            ),
+            os.environ['PATH'],
+        ])
 
         os.environ['PYTHONPATH'] = os.path.join(
             self.config['work_dir'],
-            self.config.get('virtualenv_dir', '.virtualenv'),
+            self.config['virtualenv_dir'],
             'lib',
-            'python' + self.config.get('python_version', '3.4'),
-            'site-packages')
+            'python' + self.config['python_version'],
+            'site-packages',
+        )
 
 
-    @staticmethod
-    def _flatten_dict(prefix, data):
-        # see http://stackoverflow.com/a/6036037
-        for key in data:
-            item = data[key]
-            if prefix:
-                new_prefix = prefix + '_' + key.upper()
+    def register(self, argparser, module):
+        self._modules.append(module)
+
+        try:
+            name = getattr(module, 'name')
+        except AttributeError:
+            name = module.__name__.split('.')[-1].title()
+
+        section = argparser.add_subparsers(title=name, dest='_command_',
+                help=inspect.getdoc(module))
+
+        for function in module.commands:
+            name = function.__name__.replace('_', '-')
+
+            command = section.add_parser(name, help=inspect.getdoc(function))
+            args, varargs, _, defaults = inspect.getargspec(function)
+            if args[0] == 'self':
+                args.pop(0)
+            if args[0] == 'loader':
+                args.pop(0)
+
+            if defaults is not None:
+                for arg in args[0:-len(defaults)]:
+                    name = arg.replace('_', '-')
+                    command.add_argument('--' + name, dest=arg, required=True)
+
+                for index, default in enumerate(reversed(defaults)):
+                    arg = args[-1 - index]
+                    name = arg.replace('_', '-')
+                    command.add_argument('--' + name, dest=arg, default=default)
             else:
-                new_prefix = key.upper()
+                for arg in args:
+                    name = arg.replace('_', '-')
+                    command.add_argument('--' + name, dest=arg, required=True)
 
-            try:
-                is_str = isinstance(item, basestring)
-            except NameError:
-                is_str = isinstance(item, str)
-
-            if isinstance(item, Mapping):
-                for child_item in Helper._flatten_dict(new_prefix, item):
-                    yield child_item
-            elif isinstance(item, Sequence) and not is_str:
-                yield (new_prefix, ';'.join(item))
-            else:
-                yield (new_prefix, item)
+            if varargs is not None:
+                command.add_argument(varargs, nargs='*')
 
 
-work_dir = os.path.dirname((os.path.abspath(__file__)))
-runner_dir = os.path.dirname((os.path.realpath(__file__)))
+    def execute(self, arguments):
+        for module in self._modules:
+            for function in module.commands:
+                name = function.__name__.replace('_', '-')
 
-with open(os.path.join(work_dir, 'etc', 'runner.json')) as f:
-    runner_config = json_loadf(f)
+                if name != arguments._command_:
+                    continue
+
+                args, varargs, _, _ = inspect.getargspec(function)
+                if args[0] == 'self':
+                    args.pop(0)
+                if args[0] == 'loader':
+                    args.pop(0)
+
+                args = [getattr(arguments, arg) for arg in args]
+                args.extend(getattr(arguments, varargs))
+                return function(self, *args)
+
+
+work_dir = os.path.dirname(os.path.abspath(__file__))
+runner_dir = os.path.dirname(os.path.realpath(__file__))
+sys.path[0] = work_dir
+
+try:
+    with open(os.path.join(work_dir, 'etc', 'runner.json')) as f:
+        runner_config = json_loadf(f)
+except: # pylint:disable=bare-except
+    sys.stderr.write('Unable read configuration file.\n')
+    exit(-1)
 
 runner_config['work_dir'] = work_dir
 os.environ['PACKAGE_ROOT_DIR'] = work_dir
 
-argparser = ArgumentParser()
-helper = Helper(runner_config)
+argparse = ArgumentParser()
+loader = Loader(runner_config)
 
-for name in runner_config.get('modules', []):
-    mod = load_module(name, runner_dir)
-    mod.initialize(runner_config, argparser, helper)
+for module_name in runner_config.get('modules', []):
+    mod = load_module(module_name)
+    loader.register(argparse, mod)
 
-dispatch(argparser)
+exit(loader.execute(argparse.parse_args()))

@@ -15,10 +15,10 @@ Then create "etc/runner.json" with the content like this:
 ```
 {
     "modules": [
-        "django",
-        "pip",
-        "uwsgi_django",
-        "waf"
+        "fireh_runner.django",
+        "fireh_runner.pip",
+        "fireh_runner.uwsgi_django",
+        "fireh_runner.waf"
     ],
     "package_name": "my_blog",
     "default_project": "blog",
@@ -38,8 +38,3 @@ Then create "etc/runner.json" with the content like this:
     }
 }
 ```
-
-
-## Dependency
-
-* python-argh

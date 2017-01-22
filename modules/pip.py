@@ -1,27 +1,19 @@
+"""Pip module.
+
+Pip is python package manager.
+"""
 import os
 import shlex
-from argh import add_commands
 
-class Plugin(object):
+def pip(loader, *args):
+    """Install or uninstall python packages."""
+    if len(args) == 1:
+        args = shlex.split(args[0])
 
-    config = None
-    helper = None
+    loader.setup_virtualenv()
 
-    def __init__(self, config, helper):
-        self.config = config
-        self.helper = helper
-
-
-    def pip(self, *args):
-        if len(args) == 1:
-            args = shlex.split(args[0])
-
-        self.helper.setup_virtualenv()
-
-        binargs = ['pip'] + list(args)
-        os.execvp(binargs[0], binargs)
+    binargs = ['pip'] + list(args)
+    os.execvp(binargs[0], binargs)
 
 
-def initialize(config, argparser, helper):
-    mod = Plugin(config, helper)
-    add_commands(argparser, [mod.pip])
+commands = (pip,)
