@@ -18,7 +18,7 @@ def setup(loader):
 
     check_call(['virtualenv', '--python=python' + python_version, venv_dir])
 
-    modules_link = os.path.realpath(os.path.join(work_dir, 'python_modules'))
+    modules_link = os.path.abspath(os.path.join(work_dir, 'python_modules'))
 
     if os.path.exists(modules_link):
         os.remove(modules_link)
