@@ -5,29 +5,29 @@ Website: https://uwsgi-docs.readthedocs.io/en/latest/
 import os
 import shlex
 
-def uwsgi(self, *args):
+def uwsgi(loader, *args):
     if len(args) == 1:
         args = shlex.split(args[0])
 
-    self.helper.setup_virtualenv()
+    loader.setup_virtualenv()
 
     binargs = ['uwsgi'] + list(args)
     os.execvp(binargs[0], binargs)
 
 
-def uwsgi_run(self, project=None, variant=None, *args):
+def uwsgi_run(loader, project=None, variant=None, *args):
     if len(args) == 1:
         args = shlex.split(args[0])
 
-    self.helper.setup_virtualenv()
+    loader.setup_virtualenv()
 
-    project, variant = self.helper.setup_project_env(project, variant)
+    project, variant = loader.setup_project_env(project, variant)
 
-    config = self.config.get('configuration', {})
+    config = loader.config.get('configuration', {})
     config = config.get(variant, {})
     config = config.get(project, {})
 
-    self.helper.setup_shell_env(config.get('shell_env', {}))
+    loader.setup_shell_env(config.get('shell_env', {}))
 
     socket_path = config.get('socket_path', '/tmp/%s-%s-%s.sock' %\
             (self.config['package_name'], project, variant))
