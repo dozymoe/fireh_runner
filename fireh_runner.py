@@ -92,18 +92,10 @@ class Loader(object):
     def register(self, argparser, module):
         self._modules.append(module)
 
-        try:
-            name = getattr(module, 'name')
-        except AttributeError:
-            name = module.__name__.split('.')[-1].title()
-
-        section = argparser.add_subparsers(title=name, dest='_command_',
-                help=inspect.getdoc(module))
-
         for function in module.commands:
             name = function.__name__.replace('_', '-')
 
-            command = section.add_parser(name, help=inspect.getdoc(function))
+            command = argparser.add_parser(name, help=inspect.getdoc(function))
             args, varargs, _, defaults = inspect.getargspec(function)
             if args[0] == 'self':
                 args.pop(0)
@@ -143,7 +135,8 @@ class Loader(object):
                     args.pop(0)
 
                 args = [getattr(arguments, arg) for arg in args]
-                args.extend(getattr(arguments, varargs))
+                if varargs is not None:
+                    args.extend(getattr(arguments, varargs))
                 return function(self, *args)
 
 
@@ -162,10 +155,11 @@ runner_config['work_dir'] = work_dir
 os.environ['PACKAGE_ROOT_DIR'] = work_dir
 
 argparse = ArgumentParser()
+subparsers = argparse.add_subparsers(dest='_command_')
 loader = Loader(runner_config)
 
 for module_name in runner_config.get('modules', []):
     mod = load_module(module_name)
-    loader.register(argparse, mod)
+    loader.register(subparsers, mod)
 
 exit(loader.execute(argparse.parse_args()))
