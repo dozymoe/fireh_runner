@@ -152,7 +152,7 @@ except: # pylint:disable=bare-except
     exit(-1)
 
 runner_config['work_dir'] = work_dir
-os.environ['PACKAGE_ROOT_DIR'] = work_dir
+os.environ['ROOT_DIR'] = work_dir
 
 argparse = ArgumentParser()
 subparsers = argparse.add_subparsers(dest='_command_')

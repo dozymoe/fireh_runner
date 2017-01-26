@@ -7,7 +7,7 @@ Website: http://www.djangoproject.com
 import os
 import shlex
 
-def django_admin(self, loader, project=None, variant=None, *args):
+def django_admin(loader, project=None, variant=None, *args):
     if len(args) == 1:
         args = shlex.split(args[0])
 
@@ -25,7 +25,7 @@ def django_admin(self, loader, project=None, variant=None, *args):
     os.execvp(binargs[0], binargs)
 
 
-def django_manage(self, loader, project=None, variant=None, *args):
+def django_manage(loader, project=None, variant=None, *args):
     if len(args) == 1:
         args = shlex.split(args[0])
 
@@ -40,11 +40,11 @@ def django_manage(self, loader, project=None, variant=None, *args):
     loader.setup_shell_env(config.get('shell_env', {}))
 
     binargs = ['python', 'manage.py'] + list(args)
-    os.chdir(os.path.join(self.config['work_dir'], project))
+    os.chdir(os.path.join(loader.config['work_dir'], project))
     os.execvp(binargs[0], binargs)
 
 
-def django_script(self, loader, project=None, variant=None, *args):
+def django_script(loader, project=None, variant=None, *args):
     if len(args) == 1:
         args = shlex.split(args[0])
 
@@ -59,7 +59,7 @@ def django_script(self, loader, project=None, variant=None, *args):
     loader.setup_shell_env(config.get('shell_env', {}))
 
     binargs = ['python'] + list(args)
-    os.chdir(os.path.join(self.config['work_dir'], project))
+    os.chdir(os.path.join(loader.config['work_dir'], project))
     os.execvp(binargs[0], binargs)
 
 
