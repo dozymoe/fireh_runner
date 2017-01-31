@@ -4,8 +4,15 @@ from shutil import rmtree
 from subprocess import check_call
 import sys
 
-def setup(loader):
+def setup(loader, variant=None):
     """Setup virtualenv and project."""
+
+    if variant is None:
+        variant = os.environ.get('PROJECT_VARIANT',
+                loader.config['default_variant'])
+
+    config = loader.config.get('configuration', {})
+    config = config.get(variant, {})
 
     work_dir = loader.config['work_dir']
     python_version = loader.config['python_version']
@@ -36,6 +43,9 @@ def setup(loader):
     if os.path.exists(os.path.join(work_dir, 'requirements.txt')):
         check_call(['pip', 'install', '-r', os.path.join(work_dir,
                 'requirements.txt')])
+
+    for python_pkg in config.get('python_modules', []):
+        check_call(['pip', 'install', python_pkg])
 
     if os.path.exists(os.path.join(work_dir, '.git')):
         check_call(['git', 'submodule', 'update', '--init', '--recursive'])
