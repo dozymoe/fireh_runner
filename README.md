@@ -20,11 +20,19 @@ Then create "etc/runner.json" with the content like this:
         "fireh_runner.uwsgi_django",
         "fireh_runner.waf"
     ],
+    "setup_modules": [
+        "fireh_runner.setup_modules.git",
+        "fireh_runner.setup_modules.python",
+        "fireh_runner.setup_modules.alembic",
+        "fireh_runner.setup_modules.npm",
+        "fireh_runner.setup_modules.bower",
+        "fireh_runner.setup_modules.pybuildtool"
+    ],
     "package_name": "my_blog",
     "default_project": "blog",
     "default_variant": "development",
 
-    "python_version": "3.4",
+    "python_version": "3.5",
     "virtualenv_dir": ".virtualenv",
 
     "configuration": {

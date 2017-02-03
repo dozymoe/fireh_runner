@@ -2,6 +2,8 @@
 
 from argparse import ArgumentParser
 from collections import Mapping, Sequence
+import errno
+from importlib import import_module
 from json import load as json_loadf
 import inspect
 import os
@@ -28,16 +30,6 @@ def flatten_dict(prefix, data):
             yield (new_prefix, ';'.join(item))
         else:
             yield (new_prefix, item)
-
-
-def load_module(module):
-    """Load a python module by its name."""
-    try:
-        import importlib
-        return importlib.import_module(module)
-    except ImportError:
-        sys.stderr.write('Unable to load the module: %s.\n' % module)
-        exit(-1)
 
 
 class Loader(object):
@@ -71,14 +63,15 @@ class Loader(object):
 
 
     def setup_virtualenv(self):
-        os.environ['PATH'] = ':'.join([
-            os.path.join(
-                self.config['work_dir'],
-                self.config['virtualenv_dir'],
-                'bin'
-            ),
-            os.environ['PATH'],
-        ])
+        bin_path = os.path.join(
+            self.config['work_dir'],
+            self.config['virtualenv_dir'],
+            'bin'
+        )
+        paths = os.environ['PATH'].split(os.pathsep)
+        if paths[0] != bin_path:
+            paths.insert(0, bin_path)
+            os.environ['PATH'] = os.pathsep.join(paths)
 
         os.environ['PYTHONPATH'] = os.path.join(
             self.config['work_dir'],
@@ -140,6 +133,28 @@ class Loader(object):
                 return function(self, *args)
 
 
+    @staticmethod
+    def force_symlink(target, link_name):
+        try:
+            os.symlink(target, link_name)
+        except OSError as e:
+            if e.errno == errno.EEXIST:
+                os.remove(link_name)
+                os.symlink(target, link_name)
+            else:
+                raise e
+
+
+    @staticmethod
+    def load_module(module):
+        """Load a python module by its name."""
+        try:
+            return import_module(module)
+        except ImportError:
+            sys.stderr.write('Unable to load the module: %s.\n' % module)
+            exit(-1)
+
+
 work_dir = os.path.dirname(os.path.abspath(__file__))
 runner_dir = os.path.dirname(os.path.realpath(__file__))
 sys.path[0] = work_dir
@@ -159,7 +174,7 @@ subparsers = argparse.add_subparsers(dest='_command_')
 loader = Loader(runner_config)
 
 for module_name in runner_config.get('modules', []):
-    mod = load_module(module_name)
+    mod = loader.load_module(module_name)
     loader.register(subparsers, mod)
 
 exit(loader.execute(argparse.parse_args()))
