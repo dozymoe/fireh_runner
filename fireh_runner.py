@@ -2,11 +2,13 @@
 
 from argparse import ArgumentParser
 from collections import Mapping, Sequence
+from copy import copy
 import errno
 from importlib import import_module
 from json import load as json_loadf
 import inspect
 import os
+from subprocess import check_output
 import sys
 
 def flatten_dict(prefix, data):
@@ -63,6 +65,38 @@ class Loader(object):
 
 
     def setup_virtualenv(self):
+        ## python path
+
+        if self.config.get('system_site_packages'):
+            environ_key = 'PYTHON%s_PYTHONPATH' % self.config['python_version']
+            python_path = os.environ.get(environ_key)
+            if python_path is None:
+                python_path = check_output([
+                    'python' + self.config['python_version'],
+                    '-c',
+                    'import os, site; ' +\
+                            'print(os.pathsep.join(site.getsitepackages()))'
+
+                ]).rstrip()
+                os.environ[environ_key] = python_path
+        else:
+            python_path = ''
+
+        venv_packages = os.path.join(
+            self.config['work_dir'],
+            self.config['virtualenv_dir'],
+            'lib',
+            'python' + self.config['python_version'],
+            'site-packages',
+        )
+        site_path = [p for p in python_path.split(os.pathsep) if p]
+        if len(site_path) == 0 or site_path[0] != venv_packages:
+            site_path.insert(0, venv_packages)
+
+        os.environ['PYTHONPATH'] = os.pathsep.join(site_path)
+
+        ## bin path
+
         bin_path = os.path.join(
             self.config['work_dir'],
             self.config['virtualenv_dir'],
@@ -72,14 +106,6 @@ class Loader(object):
         if paths[0] != bin_path:
             paths.insert(0, bin_path)
             os.environ['PATH'] = os.pathsep.join(paths)
-
-        os.environ['PYTHONPATH'] = os.path.join(
-            self.config['work_dir'],
-            self.config['virtualenv_dir'],
-            'lib',
-            'python' + self.config['python_version'],
-            'site-packages',
-        )
 
 
     def register(self, argparser, module):
