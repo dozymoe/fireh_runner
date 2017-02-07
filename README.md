@@ -69,7 +69,7 @@ Instructions:
 
 Then in the directory of your main project, run:
 
-    mklink runner fireh_runner/fireh_runner.py
+    mklink runner fireh_runner\fireh_runner.py
 
 Create the following runner.bat:
 
@@ -82,7 +82,7 @@ Or without the runner symlink, with this runner.bat:
     SET ROOT_DIR=C:\Users\USERNAME\Documents\MYPROJECT
     SET PYTHON3.5_BIN=C:\Python35\python.exe
 
-    C:\Python27\python.exe fireh_runner/fireh_runner.py %*
+    C:\Python27\python.exe %ROOT_DIR%\fireh_runner\fireh_runner.py %*
 
 You could then run `runner.bat setup` or `runner.bat pip-install django`
 
