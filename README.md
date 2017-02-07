@@ -14,8 +14,9 @@ Then create "etc/runner.json" with the content like this:
 
     {
         "modules": [
-            "fireh_runner.django",
+            "fireh_runner.setup",
             "fireh_runner.pip",
+            "fireh_runner.django",
             "fireh_runner.uwsgi_django",
             "fireh_runner.waf"
         ],
