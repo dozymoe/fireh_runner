@@ -39,8 +39,14 @@ def django_manage(loader, project=None, variant=None, *args):
 
     loader.setup_shell_env(config.get('shell_env', {}))
 
+    work_dir = config.get('work_dir')
+    if work_dir is None:
+        work_dir = loader.config['work_dir']
+    else:
+        work_dir = os.path.join(loader.config['work_dir'], work_dir)
+
     binargs = ['python', 'manage.py'] + list(args)
-    os.chdir(os.path.join(loader.config['work_dir'], project))
+    os.chdir(work_dir)
     os.execvp(binargs[0], binargs)
 
 
@@ -58,8 +64,14 @@ def django_script(loader, project=None, variant=None, *args):
 
     loader.setup_shell_env(config.get('shell_env', {}))
 
+    work_dir = config.get('work_dir')
+    if work_dir is None:
+        work_dir = loader.config['work_dir']
+    else:
+        work_dir = os.path.join(loader.config['work_dir'], work_dir)
+
     binargs = ['python'] + list(args)
-    os.chdir(os.path.join(loader.config['work_dir'], project))
+    os.chdir(work_dir)
     os.execvp(binargs[0], binargs)
 
 
