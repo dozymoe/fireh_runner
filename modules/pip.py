@@ -26,7 +26,7 @@ def pip_install(loader, *args):
     cmds_pip_install = ['pip', 'install']
     cmds_pip_install.extend(loader.config.get('pip_install_args', []))
 
-    binargs = ['pip'] + list(args)
+    binargs = cmds_pip_install + list(args)
     os.execvp(binargs[0], binargs)
 
 
