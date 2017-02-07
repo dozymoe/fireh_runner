@@ -3,6 +3,7 @@
 from argparse import ArgumentParser
 from collections import Mapping, Sequence
 from copy import copy
+import ctypes
 import errno
 from importlib import import_module
 from json import load as json_loadf
@@ -10,6 +11,7 @@ import inspect
 import os
 from subprocess import check_output
 import sys
+
 
 def flatten_dict(prefix, data):
     # see http://stackoverflow.com/a/6036037
@@ -43,6 +45,9 @@ class Loader(object):
     def __init__(self, config):
         self.config = config
         self._modules = []
+
+        if not hasattr(os, 'symlink') and os.name == 'nt':
+            os.symlink = self._win_symlink
 
 
     def setup_project_env(self, project=None, variant=None):
@@ -181,7 +186,26 @@ class Loader(object):
             exit(-1)
 
 
-work_dir = os.path.dirname(os.path.abspath(__file__))
+    def _win_symlink(self, target, link_name):
+        # see http://stackoverflow.com/a/8464306
+        if not hasattr(self, '_CSL'):
+            csl = ctypes.windll.kernel32.CreateSymbolicLinkW
+            csl.argtypes = (ctypes.c_wchar_p, ctypes.c_wchar_p, ctypes.c_uint32)
+            csl.restype = ctypes.c_ubyte
+            self._CSL = csl
+
+        if target is not None and os.path.isdir(target):
+            flags = 1
+        else:
+            flags = 0
+
+        if self._CSL(link_name, target, flags) == 0:
+            raise ctypes.WinError()
+
+
+work_dir = os.environ.get('ROOT_DIR', os.path.dirname(
+        os.path.abspath(__file__)))
+
 runner_dir = os.path.dirname(os.path.realpath(__file__))
 sys.path[0] = work_dir
 
