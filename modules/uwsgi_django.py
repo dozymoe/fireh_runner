@@ -45,7 +45,8 @@ def uwsgi_run(loader, project=None, variant=None, *args):
     if variant in ('dev', 'devel', 'development'):
         binargs.append('--honour-stdin')
 
-    os.chdir(os.path.join(self.config['work_dir'], project))
+    work_dir = config.get('work_dir', project)
+    work_dir = os.path.join(loader.config['work_dir'], work_dir)
 
     binargs += list(args)
     os.execvp(binargs[0], binargs)
