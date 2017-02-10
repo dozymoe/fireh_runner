@@ -14,11 +14,11 @@ Then create "etc/runner.json" with the content like this:
 
     {
         "modules": [
-            "fireh_runner.setup",
-            "fireh_runner.pip",
-            "fireh_runner.django",
-            "fireh_runner.uwsgi_django",
-            "fireh_runner.waf"
+            "fireh_runner.modules.setup",
+            "fireh_runner.modules.pip",
+            "fireh_runner.modules.django",
+            "fireh_runner.modules.uwsgi_django",
+            "fireh_runner.modules.waf"
         ],
         "setup_modules": [
             "fireh_runner.setup_modules.git",

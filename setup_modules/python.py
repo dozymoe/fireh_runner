@@ -21,7 +21,7 @@ def setup(loader, variant):
         if shellenv_key in os.environ:
             python_bin = os.environ[shellenv_key]
         else:
-            python_bin = input(python_bin + ' location: ')
+            python_bin = input(python_bin + ' executable location: ')
 
     ## python virtualenv
 
