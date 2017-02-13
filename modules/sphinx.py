@@ -11,7 +11,33 @@ Website: http://www.sphinx-doc.org
 import os
 import shlex
 
+def sphinx_apidoc(loader, *args):
+    """ Create templates from module docs in python files.
+    """
+    if len(args) == 1:
+        args = shlex.split(args[0])
+
+    loader.setup_virtualenv()
+
+    binargs = ['sphinx-apidoc'] + list(args)
+    os.execvp(binargs[0], binargs)
+
+
+def sphinx_build(loader, *args):
+    """ Create documentation pages from templates.
+    """
+    if len(args) == 1:
+        args = shlex.split(args[0])
+
+    loader.setup_virtualenv()
+
+    binargs = ['sphinx-build'] + list(args)
+    os.execvp(binargs[0], binargs)
+
+
 def sphinx_quickstart(loader, *args):
+    """ Setup Sphinx configuration.
+    """
     if len(args) == 1:
         args = shlex.split(args[0])
 
@@ -21,4 +47,4 @@ def sphinx_quickstart(loader, *args):
     os.execvp(binargs[0], binargs)
 
 
-commands = (sphinx_quickstart,)
+commands = (sphinx_apidoc, sphinx_build, sphinx_quickstart)
