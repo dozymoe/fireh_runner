@@ -1,27 +1,11 @@
-import distutils.spawn
 import os
 from shutil import rmtree
 from subprocess import check_call
 
-try:
-    input = raw_input
-except NameError:
-    pass
-
 
 def setup(loader, variant):
     work_dir = loader.config['work_dir']
-    python_version = loader.config['python_version']
-
-    ## python bin
-
-    python_bin = 'python' + python_version
-    if distutils.spawn.find_executable(python_bin) is None:
-        shellenv_key = python_bin.upper() + '_BIN'
-        if shellenv_key in os.environ:
-            python_bin = os.environ[shellenv_key]
-        else:
-            python_bin = input(python_bin + ' executable location: ')
+    python_bin = loader.get_python_bin()
 
     ## python virtualenv
 
@@ -34,8 +18,7 @@ def setup(loader, variant):
     check_call(['virtualenv', '--python=' + python_bin, venv_dir])
 
     modules_link = os.path.abspath(os.path.join(work_dir, 'python_modules'))
-    loader.force_symlink(os.path.join(venv_dir, 'lib',
-            'python' + python_version, 'site-packages'), modules_link)
+    loader.force_symlink(loader.get_virtualenv_sitepackages(), modules_link)
 
     loader.setup_virtualenv()
 

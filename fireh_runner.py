@@ -4,6 +4,7 @@ from argparse import ArgumentParser
 from collections import Mapping, Sequence
 from copy import copy
 import ctypes
+from distutils.spawn import find_executable
 import errno
 from importlib import import_module
 from json import load as json_loadf
@@ -11,6 +12,11 @@ import inspect
 import os
 from subprocess import check_output
 import sys
+
+try:
+    input = raw_input
+except NameError:
+    pass
 
 
 def flatten_dict(prefix, data):
@@ -77,23 +83,16 @@ class Loader(object):
             python_path = os.environ.get(environ_key)
             if python_path is None:
                 python_path = check_output([
-                    'python' + self.config['python_version'],
+                    self.get_python_bin(),
                     '-c',
                     'import os, site; ' +\
-                            'print(os.pathsep.join(site.getsitepackages()))'
-
+                        'print(os.pathsep.join(site.getsitepackages()))'
                 ]).rstrip()
                 os.environ[environ_key] = python_path
         else:
             python_path = ''
 
-        venv_packages = os.path.join(
-            self.config['work_dir'],
-            self.config['virtualenv_dir'],
-            'lib',
-            'python' + self.config['python_version'],
-            'site-packages',
-        )
+        venv_packages = self.get_virtualenv_sitepackages()
         site_path = [p for p in python_path.split(os.pathsep) if p]
         if len(site_path) == 0 or site_path[0] != venv_packages:
             site_path.insert(0, venv_packages)
@@ -102,11 +101,7 @@ class Loader(object):
 
         ## bin path
 
-        bin_path = os.path.join(
-            self.config['work_dir'],
-            self.config['virtualenv_dir'],
-            'bin'
-        )
+        bin_path = self.get_virtualenv_bin()
         paths = os.environ['PATH'].split(os.pathsep)
         if paths[0] != bin_path:
             paths.insert(0, bin_path)
@@ -184,6 +179,61 @@ class Loader(object):
         except ImportError:
             sys.stderr.write('Unable to load the module: %s.\n' % module)
             exit(-1)
+
+
+    def get_python_bin(self):
+        python_bin = getattr(self, '_python_bin')
+        if python_bin is not None:
+            return python_bin
+
+        python_bin = 'python' + self.config['python_version']
+        if find_executable(python_bin) is None:
+            shellenv_key = python_bin.upper() + '_BIN'
+            if shellenv_key in os.environ:
+                python_bin = os.environ[shellenv_key]
+            else:
+                python_bin = input(python_bin + ' executable location: ')
+
+        self._python_bin = python_bin
+        return python_bin
+
+
+    def get_virtualenv_bin(self):
+        work_dir = self.config['work_dir']
+        venv_dir = os.path.realpath(os.path.join(work_dir,
+                self.config['virtualenv_dir']))
+
+        bin_dir = os.path.join(venv_dir, 'bin')
+        if os.path.isdir(bin_dir):
+            return bin_dir
+
+        # windows
+        bin_dir = os.path.join(venv_dir, 'Scripts')
+        if os.path.isdir(bin_dir):
+            return bin_dir
+
+        sys.stderr.write("Unable to find virtualenv's binary directory.\n")
+        exit(-1)
+
+
+    def get_virtualenv_sitepackages(self):
+        work_dir = self.config['work_dir']
+        venv_dir = os.path.realpath(os.path.join(work_dir,
+                self.config['virtualenv_dir']))
+
+        packages_dir = os.path.join(venv_dir, 'lib',
+                'python' + self.config['python_version', 'site-packages')
+
+        if os.path.isdir(packages_dir):
+            return packages_dir
+
+        # windows
+        packages_dir = os.path.join(venv_dir, 'Lib', 'site-packages')
+        if os.path.isdir(packages_dir):
+            return packages_dir
+
+        sys.stderr.write("Unable to find virtualenv's site-packages.\n")
+        exit(-1)
 
 
     def _win_symlink(self, target, link_name):
