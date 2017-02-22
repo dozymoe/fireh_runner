@@ -182,7 +182,7 @@ class Loader(object):
 
 
     def get_python_bin(self):
-        python_bin = getattr(self, '_python_bin')
+        python_bin = getattr(self, '_python_bin', None)
         if python_bin is not None:
             return python_bin
 
@@ -222,7 +222,7 @@ class Loader(object):
                 self.config['virtualenv_dir']))
 
         packages_dir = os.path.join(venv_dir, 'lib',
-                'python' + self.config['python_version', 'site-packages')
+                'python' + self.config['python_version'], 'site-packages')
 
         if os.path.isdir(packages_dir):
             return packages_dir

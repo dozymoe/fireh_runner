@@ -13,7 +13,7 @@ def setup(loader, variant):
             loader.config['virtualenv_dir']))
 
     if os.path.exists(venv_dir):
-        rmtree(venv_dir)
+        rmtree(venv_dir, ignore_errors=True)
 
     check_call(['virtualenv', '--python=' + python_bin, venv_dir])
 

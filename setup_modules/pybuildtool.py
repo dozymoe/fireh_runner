@@ -13,12 +13,9 @@ else:
 
 def setup(loader, variant):
     work_dir = loader.config['work_dir']
-    venv_dir = os.path.realpath(os.path.join(work_dir,
-            loader.config['virtualenv_dir']))
-
-    waf_path = os.path.join(venv_dir, 'bin', 'waf')
-    waf_ver_path = os.path.join(venv_dir, 'bin',
-            'waf-' + loader.config['waf_version'])
+    bin_dir = loader.get_virtualenv_bin()
+    waf_path = os.path.join(bin_dir, 'waf')
+    waf_ver_path = os.path.join(bin_dir, 'waf-' + loader.config['waf_version'])
 
     if not os.path.exists(waf_ver_path):
         print('Downloading waf...')
