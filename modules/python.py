@@ -1,12 +1,8 @@
 """ Python module.
 """
 import os
-import shlex
 
 def python(loader, project=None, variant=None, *args):
-    if len(args) == 1:
-        args = shlex.split(args[0])
-
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)

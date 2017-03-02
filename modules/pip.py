@@ -3,13 +3,9 @@
 Pip is python package manager.
 """
 import os
-import shlex
 
 def pip(loader, *args):
     """Install or uninstall python packages."""
-    if len(args) == 1:
-        args = shlex.split(args[0])
-
     loader.setup_virtualenv()
 
     binargs = ['pip'] + list(args)
@@ -18,9 +14,6 @@ def pip(loader, *args):
 
 def pip_install(loader, *args):
     """Install or uninstall python packages."""
-    if len(args) == 1:
-        args = shlex.split(args[0])
-
     loader.setup_virtualenv()
 
     cmds_pip_install = ['pip', 'install']

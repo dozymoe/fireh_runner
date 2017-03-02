@@ -5,12 +5,8 @@ Django is a python CMS framework.
 Website: http://www.djangoproject.com
 """
 import os
-import shlex
 
 def django_admin(loader, project=None, variant=None, *args):
-    if len(args) == 1:
-        args = shlex.split(args[0])
-
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -26,9 +22,6 @@ def django_admin(loader, project=None, variant=None, *args):
 
 
 def django_manage(loader, project=None, variant=None, *args):
-    if len(args) == 1:
-        args = shlex.split(args[0])
-
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -48,9 +41,6 @@ def django_manage(loader, project=None, variant=None, *args):
 
 
 def django_script(loader, project=None, variant=None, *args):
-    if len(args) == 1:
-        args = shlex.split(args[0])
-
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)

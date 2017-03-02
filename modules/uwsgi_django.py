@@ -3,12 +3,8 @@
 Website: https://uwsgi-docs.readthedocs.io/en/latest/
 """
 import os
-import shlex
 
 def uwsgi(loader, *args):
-    if len(args) == 1:
-        args = shlex.split(args[0])
-
     loader.setup_virtualenv()
 
     binargs = ['uwsgi'] + list(args)
@@ -16,9 +12,6 @@ def uwsgi(loader, *args):
 
 
 def uwsgi_run(loader, project=None, variant=None, *args):
-    if len(args) == 1:
-        args = shlex.split(args[0])
-
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)

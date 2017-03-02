@@ -52,6 +52,20 @@ Then create "etc/runner.json" with the content like this:
 
 
 
+## Using
+
+Just run `./runner` to see what options you have, these commands were
+provided by "modules" section in "etc/runner.json".
+
+If you run something like `./runner pip install --upgrade MODULE`, this will
+break with `error: unrecognized arguments: --upgrade MODULE`. Do it like this:
+`./runner pip install MODULE -- --upgrade`, there is "--" before "--upgrade".
+
+Run `./runner pip --help` and you'll see that the pip command only recognize
+`args` as positional arguments and `--help` as optional arguments, it doesn't
+recognize `--upgrade`.
+
+
 ## Windows users
 
 If you wanted to use `runner setup` you need symlink support.
