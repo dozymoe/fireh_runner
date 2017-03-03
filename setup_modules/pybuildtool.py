@@ -16,6 +16,12 @@ def setup(loader, variant):
     bin_dir = loader.get_virtualenv_bin()
     waf_path = os.path.join(bin_dir, 'waf')
     waf_ver_path = os.path.join(bin_dir, 'waf-' + loader.config['waf_version'])
+    use_symlink = not loader.config.get('no_symlink_please', False)
+
+    if use_symlink:
+        link_fn = loader.force_symlink
+    else:
+        link_fn = copyfile
 
     if not os.path.exists(waf_ver_path):
         print('Downloading waf...')
@@ -26,17 +32,18 @@ def setup(loader, variant):
             f.write(resp)
 
         os.chmod(waf_ver_path, int('755', 8))
-    loader.force_symlink(waf_ver_path, waf_path)
+
+    link_fn(waf_ver_path, waf_path)
 
     build_path = os.path.join(work_dir, 'build.yml')
     build_var_path = os.path.join(work_dir, 'build-%s.yml' % variant)
     if os.path.exists(build_var_path):
-        loader.force_symlink(build_var_path, build_path)
+        link_fn(build_var_path, build_path)
 
     wscript_path = os.path.join(work_dir, 'wscript')
     wscript_var_path = os.path.join(work_dir, 'wscript-' + variant)
     if os.path.exists(wscript_var_path):
-        loader.force_symlink(wscript_var_path, wscript_path)
+        link_fn(wscript_var_path, wscript_path)
 
     if os.path.exists(wscript_path):
         loader.setup_virtualenv()

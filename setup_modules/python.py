@@ -1,11 +1,17 @@
 import os
-from shutil import rmtree
+from shutil import copyfile, rmtree
 from subprocess import check_call
 
 
 def setup(loader, variant):
     work_dir = loader.config['work_dir']
     python_bin = loader.get_python_bin()
+    use_symlink = not loader.config.get('no_symlink_please', False)
+
+    if use_symlink:
+        link_fn = loader.force_symlink
+    else:
+        link_fn = copyfile
 
     ## python virtualenv
 
@@ -17,8 +23,9 @@ def setup(loader, variant):
 
     check_call(['virtualenv', '--python=' + python_bin, venv_dir])
 
-    modules_link = os.path.abspath(os.path.join(work_dir, 'python_modules'))
-    loader.force_symlink(loader.get_virtualenv_sitepackages(), modules_link)
+    if use_symlink:
+        modules_link = os.path.abspath(os.path.join(work_dir, 'python_modules'))
+        loader.force_symlink(loader.get_virtualenv_sitepackages(), modules_link)
 
     loader.setup_virtualenv()
 
@@ -34,7 +41,7 @@ def setup(loader, variant):
     reqtxt_path = os.path.join(work_dir, 'requirements.txt')
     reqtxt_var_path = os.path.join(work_dir, 'requirements-%s.txt' % variant)
     if os.path.exists(reqtxt_var_path):
-        loader.force_symlink(reqtxt_var_path, reqtxt_path)
+        link_fn(reqtxt_var_path, reqtxt_path)
 
     if os.path.exists(reqtxt_path):
         check_call(cmds_pip_install + ['-r', reqtxt_path])
