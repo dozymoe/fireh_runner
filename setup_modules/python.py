@@ -21,7 +21,7 @@ def setup(loader, variant):
     if os.path.exists(venv_dir):
         rmtree(venv_dir, ignore_errors=True)
 
-    check_call(['virtualenv', '--python=' + python_bin, venv_dir])
+    check_call([python_bin, '-m', 'virtualenv', venv_dir])
 
     if use_symlink:
         modules_link = os.path.abspath(os.path.join(work_dir, 'python_modules'))

@@ -5,6 +5,11 @@ Manage console programs of multiple sub-projects.
 See demo project: https://github.com/dozymoe/fireh_runner_demo
 
 
+## Requirements
+
+* python-virtualenv
+
+
 ## Installation
 
 `git clone` into a directory under your main project, then create a symlink of
@@ -88,7 +93,7 @@ Create this runner.bat:
     SET ROOT_DIR=%~dp0
     SET PYTHON3.5_BIN=C:\Python35\python.exe
 
-    python.exe %ROOT_DIR%\fireh_runner\fireh_runner.py %*
+    %PYTHON3.5_BIN% %ROOT_DIR%\fireh_runner\fireh_runner.py %*
 
 You could then run `runner.bat setup` or `runner.bat pip-install django`
 
