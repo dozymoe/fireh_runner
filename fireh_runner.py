@@ -143,15 +143,14 @@ class Loader(object):
             for arg in args:
                 if len(arg) == 1:
                     command.add_argument(arg[0], nargs='*')
-                    continue
-
-                name = arg[0].replace('_', '-')
-                if arg[1] is not None:
+                elif len(arg) == 2:
+                    name = arg[0].replace('_', '-')
                     command.add_argument('--' + name, dest=arg[0],
-                            default=arg[1], type=arg[2])
+                            required=True, type=arg[1])
                 else:
+                    name = arg[0].replace('_', '-')
                     command.add_argument('--' + name, dest=arg[0],
-                            required=True, type=arg[2])
+                            default=arg[2], type=arg[1])
 
 
     def execute(self, arguments):
@@ -283,32 +282,31 @@ class Loader(object):
                     continue
                 else:
 
-                    if param.default is param.empty:
-                        default = None
-                    else:
-                        default = param.default
-
                     if param.annotation is param.empty:
                         type_ = None
                     else:
                         type_ = param.annotation
 
-                    yield (name, default, type_)
+                    if param.default is param.empty:
+                        yield (name, type_)
+                    else:
+                        yield (name, type_, param.default)
 
         except AttributeError:
             args, varargs, _, defaults = inspect.getargspec(func) # pylint:disable=deprecated-method
 
             if defaults is not None:
-                for arg in args[0:-len(defaults)]:
-                    yield (arg, None, None)
+                n_non_default = len(args) - len(defaults)
+                for arg in args[0:n_non_default]:
+                    yield (arg, None)
 
-                for index, default in enumerate(reversed(defaults)):
-                    arg = args[-1 - index]
-                    yield (arg, default, None)
+                for index, arg in enumerate(args[n_non_default:]):
+                    default = defaults[index + 1 - n_non_default]
+                    yield (arg, None, default)
 
             else:
                 for arg in args:
-                    yield (arg, None, None)
+                    yield (arg, None)
 
             if varargs is not None:
                 yield (varargs,)
