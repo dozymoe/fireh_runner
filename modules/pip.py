@@ -3,6 +3,11 @@
 Pip is python package manager.
 """
 import os
+try:
+    import xmlrpclib # pylint:disable=unused-import
+except ImportError:
+    import xmlrpc.client as xmlrpclib # pylint:disable=unused-import
+
 
 def pip(loader, *args):
     """Install or uninstall python packages."""
@@ -12,8 +17,8 @@ def pip(loader, *args):
     os.execvp(binargs[0], binargs)
 
 
-def pip_install(loader, *args):
-    """Install or uninstall python packages."""
+def pip_install(loader, save=None, *args):
+    """Install python packages."""
     loader.setup_virtualenv()
 
     cmds_pip_install = ['pip', 'install']
@@ -23,4 +28,14 @@ def pip_install(loader, *args):
     os.execvp(binargs[0], binargs)
 
 
-commands = (pip, pip_install)
+def pip_uninstall(loader, save=None, *args):
+    """Uninstall python packages."""
+    loader.setup_virtualenv()
+
+    cmds_pip_install = ['pip', 'uninstall']
+
+    binargs = cmds_pip_install + list(args)
+    os.execvp(binargs[0], binargs)
+
+
+commands = (pip, pip_install, pip_uninstall)

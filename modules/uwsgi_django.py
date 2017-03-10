@@ -23,7 +23,7 @@ def uwsgi_run(loader, project=None, variant=None, *args):
     loader.setup_shell_env(config.get('shell_env', {}))
 
     socket_path = config.get('socket_path', '/tmp/%s-%s-%s.sock' %\
-            (self.config['package_name'], project, variant))
+            (loader.config['package_name'], project, variant))
 
     binargs = [
         'uwsgi',
@@ -39,7 +39,7 @@ def uwsgi_run(loader, project=None, variant=None, *args):
         binargs.append('--honour-stdin')
 
     work_dir = config.get('work_dir', project)
-    work_dir = os.path.join(loader.config['work_dir'], work_dir)
+    work_dir = loader.expand_path(work_dir)
 
     binargs += list(args)
     os.execvp(binargs[0], binargs)

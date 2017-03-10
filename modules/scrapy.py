@@ -18,7 +18,7 @@ def scrapy(loader, project=None, variant=None, *args):
     loader.setup_shell_env(config.get('shell_env', {}))
 
     work_dir = config.get('work_dir', project)
-    work_dir = os.path.join(loader.config['work_dir'], work_dir)
+    work_dir = loader.expand_path(work_dir)
 
     binargs = ['scrapy'] + list(args)
     os.chdir(work_dir)

@@ -1,8 +1,42 @@
 import os
 from subprocess import check_call
 
-def setup(loader, variant):
-    work_dir = loader.config['work_dir']
-    if os.path.exists(os.path.join(work_dir, 'alembic.ini')):
-        loader.setup_virtualenv()
-        check_call(['alembic', 'upgrade', 'head'])
+def setup(loader, variant=None):
+    loader.setup_virtualenv()
+
+    _, variant = loader.setup_project_env(project, variant)
+
+    config = loader.config.get('configuration', {})
+    config = config.get(variant, {})
+
+    for project, prj_config in config.items():
+        target = prj_config.get('alembic.setup_do_upgrade')
+        if target is None:
+            continue
+        elif target is True:
+            target = 'head'
+
+        work_dir = prj_config.get('work_dir', project)
+        work_dir = loader.expand_path(work_dir)
+
+        binargs = ['alembic']
+
+        config_file = prj_config.get('alembic.config_file')
+        if config_file is not None:
+            pass
+        elif os.path.exists(os.path.join(work_dir, 'alembic.ini')):
+            config_file = os.path.join(work_dir, 'alembic.ini')
+        else:
+            continue
+
+        binargs.append('-c')
+        binargs.append(loader.expand_path(config_file))
+
+        envs = prj_config.get('alembic.custom_env', {})
+        for key, value in envs.items():
+            binargs.append('-x')
+            binargs.append('%s=%s' % (key, value))
+
+        binargs.append('upgrade')
+        binargs.append(target)
+        check_call(binargs)
