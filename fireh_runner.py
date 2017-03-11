@@ -112,7 +112,7 @@ class Loader(object):
     @staticmethod
     def fix_dir_separator(slash_delim_path):
         """ Text replace directory separator.
-        
+
         Replace slash character (/) with the OS' directory separator.
         """
         return slash_delim_path.replace('/', os.path.sep)

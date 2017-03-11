@@ -4,7 +4,7 @@ from subprocess import check_call
 def setup(loader, variant=None):
     loader.setup_virtualenv()
 
-    _, variant = loader.setup_project_env(project, variant)
+    _, variant = loader.setup_project_env(None, variant)
 
     config = loader.config.get('configuration', {})
     config = config.get(variant, {})
