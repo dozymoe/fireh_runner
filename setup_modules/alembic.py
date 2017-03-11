@@ -16,6 +16,8 @@ def setup(loader, variant=None):
         elif target is True:
             target = 'head'
 
+        loader.setup_shell_env(prj_config.get('shell_env', {}))
+
         work_dir = prj_config.get('work_dir', project)
         work_dir = loader.expand_path(work_dir)
 
@@ -39,4 +41,6 @@ def setup(loader, variant=None):
 
         binargs.append('upgrade')
         binargs.append(target)
+
+        os.chdir(work_dir)
         check_call(binargs)
