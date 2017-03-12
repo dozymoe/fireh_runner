@@ -336,4 +336,5 @@ for module_name in runner_config.get('modules', []):
     mod = loader.load_module(module_name)
     loader.register(subparsers, mod)
 
+os.chdir(root_dir)
 exit(loader.execute(argparse.parse_args()))
