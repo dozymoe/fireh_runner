@@ -36,6 +36,14 @@ def setup(loader, variant):
 
     link_fn(waf_ver_path, waf_path)
 
+    if os.name == 'nt':
+        print('Downloading waf.bat...')
+        resp = urllib.request.urlopen('https://raw.githubusercontent.com/' +\
+                'waf-project/waf/master/utils/waf.bat', timeout=30).read()
+
+        with open(os.path.join(bin_dir, 'waf.bat'), 'wb') as f:
+            f.write(resp)
+
     build_path = os.path.join(work_dir, 'build.yml')
     build_var_path = os.path.join(work_dir, 'build-%s.yml' % variant)
     if os.path.exists(build_var_path):

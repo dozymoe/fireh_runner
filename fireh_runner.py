@@ -9,7 +9,8 @@ from importlib import import_module
 from json import load as json_loadf
 import inspect
 import os
-from subprocess import check_output
+import signal
+from subprocess import check_output, Popen
 import sys
 
 try:
@@ -53,8 +54,11 @@ class Loader(object):
         self.config = config
         self._modules = []
 
-        if not hasattr(os, 'symlink') and os.name == 'nt':
-            os.symlink = self._win_symlink
+        if os.name == 'nt':
+            os.execvp = self._win_execvp
+
+            if not hasattr(os, 'symlink'):
+                os.symlink = self._win_symlink
 
 
     def setup_project_env(self, project=None, variant=None):
@@ -269,6 +273,18 @@ class Loader(object):
 
         if self._CSL(link_name, target, flags) == 0:
             raise ctypes.WinError()
+
+
+    def _win_execvp(self, cmd, argv):
+        # see:
+        # https://github.com/jupyter/jupyter_core/pull/54
+        # https://github.com/jupyter/jupyter_core/pull/88
+        process = Popen([cmd] + argv[1:], shell=True)
+        # Don't raise KeyboardInterrupt in the parent process.
+        # Set  this after spawning, to avoid subprocess inheriting handler.
+        signal.signal(signal.SIGINT, signal.SIG_IGN)
+        process.wait()
+        sys.exit(process.returncode)
 
 
     @staticmethod
