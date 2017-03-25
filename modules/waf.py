@@ -4,8 +4,9 @@ Website: http://waf.io
 """
 import os
 
-def waf(loader, *args):
+def waf(loader, variant=None, *args):
     """Build project."""
+    loader.setup_project_env(variant=variant)
     loader.setup_virtualenv()
 
     binargs = ['waf'] + list(args)
