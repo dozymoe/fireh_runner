@@ -209,15 +209,15 @@ class Loader(object):
             return python_bin
 
         python_bin = 'python' + self.config['python_version']
-        if find_executable(python_bin) is None:
+        self._python_bin = find_executable(python_bin)
+        if self._python_bin is None:
             shellenv_key = python_bin.upper() + '_BIN'
             if shellenv_key in os.environ:
-                python_bin = os.environ[shellenv_key]
+                self._python_bin = os.environ[shellenv_key]
             else:
-                python_bin = input(python_bin + ' executable location: ')
+                self._python_bin = input(python_bin + ' executable location: ')
 
-        self._python_bin = python_bin
-        return python_bin
+        return self._python_bin
 
 
     def get_virtualenv_bin(self):
@@ -327,9 +327,24 @@ class Loader(object):
             if varargs is not None:
                 yield (varargs,)
 
+    @staticmethod
+    def fix_pathname(dos_path):
+        fixed_path = dos_path.replace('\\', os.path.sep)
+        fixed_path = fixed_path.replace('/', os.path.sep)
+
+        if sys.platform == 'msys':
+            return os.path.join('/', fixed_path.replace(':', ''))
+        elif sys.platform == 'cygwin':
+            return os.path.join('/cygdrive',
+                    fixed_path.replace(':', ''))
+
+        return fixed_path
+
 
 root_dir = os.environ.get('ROOT_DIR', os.path.dirname(
         os.path.abspath(__file__)))
+
+root_dir = Loader.fix_pathname(root_dir)
 
 runner_dir = os.path.dirname(os.path.realpath(__file__))
 sys.path[0] = root_dir
