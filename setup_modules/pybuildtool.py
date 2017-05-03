@@ -54,7 +54,18 @@ def setup(loader, variant):
     if os.path.exists(wscript_var_path):
         link_fn(wscript_var_path, wscript_path)
 
+    os.chdir(work_dir)
+
+    package_path = os.path.join(work_dir, 'package.json')
+    package_var_path = os.path.join(work_dir, 'package-%s.json' % variant)
+    if os.path.exists(package_var_path):
+        link_fn(package_var_path, package_path)
+    if os.path.exists(package_path):
+        print('Setup node_modules')
+        check_call(['npm', 'install'])
+
     if os.path.exists(wscript_path):
         loader.setup_virtualenv()
         check_call(['waf', 'configure'])
         check_call(['waf', 'clean', 'build'])
+        check_call(['waf', 'build'])
