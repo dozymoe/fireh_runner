@@ -5,11 +5,6 @@ Manage console programs of multiple sub-projects.
 See demo project: https://github.com/dozymoe/fireh_runner_demo
 
 
-## Requirements
-
-* python-virtualenv
-
-
 ## Installation
 
 `git clone` into a directory under your main project, then create a symlink of
