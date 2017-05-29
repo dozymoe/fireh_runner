@@ -22,7 +22,7 @@ def alembic(loader, project=None, variant=None, *args):
     work_dir = config.get('work_dir', project)
     work_dir = loader.expand_path(work_dir)
 
-    binargs = ['alembic']
+    binargs = loader.get_binargs('alembic')
 
     config_file = config.get('alembic.config_file')
     if config_file is not None:

@@ -14,9 +14,13 @@ else:
 
 def setup(loader, variant):
     work_dir = loader.config['work_dir']
-    bin_dir = loader.get_virtualenv_bin()
-    waf_path = os.path.join(bin_dir, 'waf')
-    waf_ver_path = os.path.join(bin_dir, 'waf-' + loader.config['waf_version'])
+    venv_dir = os.path.realpath(loader.config['virtualenv_dir'])
+    venv_bin_dir = os.path.join(venv_dir, 'bin')
+
+    waf_path = os.path.join(venv_bin_dir, 'waf')
+    waf_ver_path = os.path.join(venv_bin_dir,
+            'waf-' + loader.config['waf_version'])
+
     use_symlink = not loader.config.get('no_symlink_please', False)
 
     if use_symlink:
@@ -41,7 +45,7 @@ def setup(loader, variant):
         resp = urllib.request.urlopen('https://raw.githubusercontent.com/' +\
                 'waf-project/waf/master/utils/waf.bat', timeout=30).read()
 
-        with open(os.path.join(bin_dir, 'waf.bat'), 'wb') as f:
+        with open(os.path.join(venv_bin_dir, 'waf.bat'), 'wb') as f:
             f.write(resp)
 
     build_path = os.path.join(work_dir, 'build.yml')
@@ -66,6 +70,6 @@ def setup(loader, variant):
 
     if os.path.exists(wscript_path):
         loader.setup_virtualenv()
-        check_call(['waf', 'configure'])
-        check_call(['waf', 'clean', 'build'])
-        check_call(['waf', 'build'])
+        check_call(loader.get_binargs('waf', 'configure'))
+        check_call(loader.get_binargs('waf', 'clean', 'build'))
+        check_call(loader.get_binargs('waf', 'build'))

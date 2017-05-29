@@ -27,7 +27,7 @@ def setup(loader, variant):
 
     loader.setup_virtualenv()
 
-    cmds_pip_install = ['pip', 'install', '--user']
+    cmds_pip_install = [python_bin, '-m', 'pip', 'install', '--user']
     cmds_pip_install.extend(loader.config.get('pip_install_args', []))
 
     ## update python pip

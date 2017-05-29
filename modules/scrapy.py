@@ -20,7 +20,8 @@ def scrapy(loader, project=None, variant=None, *args):
     work_dir = config.get('work_dir', project)
     work_dir = loader.expand_path(work_dir)
 
-    binargs = ['scrapy'] + list(args)
+    binargs = loader.get_binargs('scrapy', *args)
+
     os.chdir(work_dir)
     os.execvp(binargs[0], binargs)
 
@@ -29,7 +30,8 @@ def scrapy_startproject(loader, *args):
     """Create new scrapy project."""
     loader.setup_virtualenv()
 
-    binargs = ['scrapy', 'startproject'] + list(args)
+    binargs = loader.get_binargs('scrapy', 'startproject', *args)
+
     os.execvp(binargs[0], binargs)
 
 

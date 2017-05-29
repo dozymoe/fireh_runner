@@ -17,13 +17,14 @@ def django_admin(loader, project=None, variant=None, *args):
 
     loader.setup_shell_env(config.get('shell_env', {}))
 
-    binargs = ['django-admin'] + list(args)
+    binargs = loader.get_binargs('django-admin', *args)
+
     os.execvp(binargs[0], binargs)
 
 
 def django_manage(loader, project=None, variant=None, *args):
     loader.setup_virtualenv()
-    python_bin = self.get_python_bin()
+    python_bin = loader.get_python_bin()
 
     project, variant = loader.setup_project_env(project, variant)
 
@@ -43,7 +44,7 @@ def django_manage(loader, project=None, variant=None, *args):
 
 def django_script(loader, project=None, variant=None, *args):
     loader.setup_virtualenv()
-    python_bin = self.get_python_bin()
+    python_bin = loader.get_python_bin()
 
     project, variant = loader.setup_project_env(project, variant)
 

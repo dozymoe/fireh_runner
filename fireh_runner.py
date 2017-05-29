@@ -81,7 +81,7 @@ class Loader(object):
 
 
     def setup_virtualenv(self):
-        venv_dir = os.path.realpath(self.config['virtualenv_dir'])
+        venv_dir = self.get_virtualenv_dir()
         venv_bin_dir = os.path.join(venv_dir, 'bin')
 
         os.environ['PYTHONUSERBASE'] = venv_dir
@@ -180,6 +180,16 @@ class Loader(object):
         except ImportError:
             sys.stderr.write('Unable to load the module: %s.\n' % module)
             exit(-1)
+
+
+    def get_virtualenv_dir(self):
+        return os.path.realpath(self.config['virtualenv_dir'])
+
+
+    def get_binargs(self, script, *args):
+        python_bin = self.get_python_bin()
+        venv_dir = self.get_virtualenv_dir()
+        return [python_bin, os.path.join(venv_dir, 'bin', script)] + list(args)
 
 
     def get_python_bin(self):

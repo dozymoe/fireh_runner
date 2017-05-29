@@ -15,7 +15,7 @@ def sphinx_apidoc(loader, *args):
     """
     loader.setup_virtualenv()
 
-    binargs = ['sphinx-apidoc'] + list(args)
+    binargs = loader.get_binargs('sphinx-apidoc', *args)
     os.execvp(binargs[0], binargs)
 
 
@@ -24,7 +24,7 @@ def sphinx_build(loader, *args):
     """
     loader.setup_virtualenv()
 
-    binargs = ['sphinx-build'] + list(args)
+    binargs = loader.get_binargs('sphinx-build', *args)
     os.execvp(binargs[0], binargs)
 
 
@@ -33,7 +33,7 @@ def sphinx_quickstart(loader, *args):
     """
     loader.setup_virtualenv()
 
-    binargs = ['sphinx-quickstart'] + list(args)
+    binargs = loader.get_binargs('sphinx-quickstart', *args)
     os.execvp(binargs[0], binargs)
 
 

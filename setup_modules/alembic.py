@@ -21,7 +21,7 @@ def setup(loader, variant=None):
         work_dir = prj_config.get('work_dir', project)
         work_dir = loader.expand_path(work_dir)
 
-        binargs = ['alembic']
+        binargs = loader.get_binargs('alembic')
 
         config_file = prj_config.get('alembic.config_file')
         if config_file is not None:
