@@ -39,7 +39,6 @@ Then create "etc/runner.json" with the content like this:
 
         "python_version": "3.5",
         "virtualenv_dir": ".virtualenv",
-        "system_site_packages": false,
         "no_symlink_please": false,
         "pip_install_args": [
             "--only-binary", ":all:"

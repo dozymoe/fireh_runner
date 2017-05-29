@@ -294,7 +294,9 @@ try:
     with open(os.path.join(root_dir, 'etc', 'runner.json')) as f:
         runner_config = json_loadf(f)
 except Exception as e: # pylint:disable=broad-except
-    sys.stderr.write('Unable read configuration file:\n' + repr(e) + '\n')
+    sys.stderr.write('Unable read configuration file etc/runner.json:\n' +\
+            repr(e) + '\n')
+
     exit(-1)
 
 runner_config['work_dir'] = root_dir

@@ -21,15 +21,13 @@ def setup(loader, variant):
     if os.path.exists(venv_dir):
         rmtree(venv_dir, ignore_errors=True)
 
-    check_call([python_bin, '-m', 'virtualenv', venv_dir])
-
     if use_symlink:
         modules_link = os.path.abspath(os.path.join(work_dir, 'python_modules'))
         loader.force_symlink(loader.get_virtualenv_sitepackages(), modules_link)
 
     loader.setup_virtualenv()
 
-    cmds_pip_install = ['pip', 'install']
+    cmds_pip_install = ['pip', 'install', '--user']
     cmds_pip_install.extend(loader.config.get('pip_install_args', []))
 
     ## update python pip
