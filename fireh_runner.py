@@ -81,35 +81,14 @@ class Loader(object):
 
 
     def setup_virtualenv(self):
-        ## python path
+        venv_dir = os.path.realpath(self.config['virtualenv_dir'])
+        venv_bin_dir = os.path.join(venv_dir, 'bin')
 
-        if self.config.get('system_site_packages'):
-            environ_key = 'PYTHON%s_PYTHONPATH' % self.config['python_version']
-            python_path = os.environ.get(environ_key)
-            if python_path is None:
-                python_path = check_output([
-                    self.get_python_bin(),
-                    '-c',
-                    'import os, site; ' +\
-                        'print(os.pathsep.join(site.getsitepackages()))'
-                ]).rstrip()
-                os.environ[environ_key] = python_path
-        else:
-            python_path = ''
+        os.environ['PYTHONUSERBASE'] = venv_dir
 
-        venv_packages = self.get_virtualenv_sitepackages()
-        site_path = [p for p in python_path.split(os.pathsep) if p]
-        if len(site_path) == 0 or site_path[0] != venv_packages:
-            site_path.insert(0, venv_packages)
-
-        os.environ['PYTHONPATH'] = os.pathsep.join(site_path)
-
-        ## bin path
-
-        bin_path = self.get_virtualenv_bin()
         paths = os.environ['PATH'].split(os.pathsep)
-        if paths[0] != bin_path:
-            paths.insert(0, bin_path)
+        if paths[0] != venv_bin_dir:
+            paths.insert(0, venv_bin_dir)
             os.environ['PATH'] = os.pathsep.join(paths)
 
 
@@ -218,44 +197,6 @@ class Loader(object):
                 self._python_bin = input(python_bin + ' executable location: ')
 
         return self._python_bin
-
-
-    def get_virtualenv_bin(self):
-        work_dir = self.config['work_dir']
-        venv_dir = os.path.realpath(os.path.join(work_dir,
-                self.config['virtualenv_dir']))
-
-        bin_dir = os.path.join(venv_dir, 'bin')
-        if os.path.isdir(bin_dir):
-            return bin_dir
-
-        # windows
-        bin_dir = os.path.join(venv_dir, 'Scripts')
-        if os.path.isdir(bin_dir):
-            return bin_dir
-
-        sys.stderr.write("Unable to find virtualenv's binary directory.\n")
-        exit(-1)
-
-
-    def get_virtualenv_sitepackages(self):
-        work_dir = self.config['work_dir']
-        venv_dir = os.path.realpath(os.path.join(work_dir,
-                self.config['virtualenv_dir']))
-
-        packages_dir = os.path.join(venv_dir, 'lib',
-                'python' + self.config['python_version'], 'site-packages')
-
-        if os.path.isdir(packages_dir):
-            return packages_dir
-
-        # windows
-        packages_dir = os.path.join(venv_dir, 'Lib', 'site-packages')
-        if os.path.isdir(packages_dir):
-            return packages_dir
-
-        sys.stderr.write("Unable to find virtualenv's site-packages.\n")
-        exit(-1)
 
 
     def _win_symlink(self, target, link_name):
