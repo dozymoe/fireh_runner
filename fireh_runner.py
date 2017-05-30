@@ -183,7 +183,8 @@ class Loader(object):
 
 
     def get_virtualenv_dir(self):
-        return os.path.realpath(self.config['virtualenv_dir'])
+        return os.path.join(self.config['work_dir'],
+                self.config['virtualenv_dir'])
 
 
     def get_binargs(self, script, *args):
