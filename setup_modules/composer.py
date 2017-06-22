@@ -29,7 +29,7 @@ def setup(loader, variant=None):
         json_path = os.path.join(work_dir, 'composer.json')
         json_var_path = os.path.join(work_dir, 'composer-%s.json' % variant)
         if os.path.exists(json_var_path):
-            link_fn(json_var_path, json_path)
+            loader.force_symlink(json_var_path, json_path)
 
         if not os.path.exists(json_path):
             continue

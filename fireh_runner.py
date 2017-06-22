@@ -10,7 +10,7 @@ from json import load as json_loadf
 import inspect
 import os
 import signal
-from subprocess import check_output, Popen
+from subprocess import Popen
 import sys
 
 try:

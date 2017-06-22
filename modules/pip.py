@@ -12,7 +12,7 @@ except ImportError:
 def pip(loader, *args):
     """Install or uninstall python packages."""
     loader.setup_virtualenv()
-    python_bin = self.get_python_bin()
+    python_bin = loader.get_python_bin()
 
     pip_args = list(args)
     for arg in args:
@@ -30,7 +30,7 @@ def pip(loader, *args):
 def pip_install(loader, save=None, *args):
     """Install python packages."""
     loader.setup_virtualenv()
-    python_bin = self.get_python_bin()
+    python_bin = loader.get_python_bin()
 
     cmds_pip_install = [python_bin, '-m', 'pip', 'install', '--user']
     cmds_pip_install.extend(loader.config.get('pip_install_args', []))
@@ -42,7 +42,7 @@ def pip_install(loader, save=None, *args):
 def pip_uninstall(loader, save=None, *args):
     """Uninstall python packages."""
     loader.setup_virtualenv()
-    python_bin = self.get_python_bin()
+    python_bin = loader.get_python_bin()
 
     cmds_pip_uninstall = [python_bin, '-m', 'pip', 'uninstall']
 

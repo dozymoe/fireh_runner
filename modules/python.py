@@ -4,7 +4,7 @@ import os
 
 def python(loader, project=None, variant=None, *args):
     loader.setup_virtualenv()
-    python_bin = self.get_python_bin()
+    python_bin = loader.get_python_bin()
 
     project, variant = loader.setup_project_env(project, variant)
 

@@ -1,6 +1,7 @@
 import os
 from shutil import copyfile, rmtree
 from subprocess import check_call
+import sys
 
 
 def setup(loader, variant):
@@ -23,7 +24,17 @@ def setup(loader, variant):
 
     if use_symlink:
         modules_link = os.path.abspath(os.path.join(work_dir, 'python_modules'))
-        loader.force_symlink(loader.get_virtualenv_sitepackages(), modules_link)
+
+        # see: https://stackoverflow.com/a/9964440
+        if sys.maxsize > 2**32:
+            arch = 64
+        else:
+            arch = 32
+
+        sitepackages = os.path.join(venv_dir, 'lib%i' % arch,
+                'python%s' % loader.config['python_version'], 'site-packages')
+
+        loader.force_symlink(sitepackages, modules_link)
 
     loader.setup_virtualenv()
 
