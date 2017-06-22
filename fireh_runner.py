@@ -196,6 +196,7 @@ class Loader(object):
     def get_python_bin(self):
         python_bin = getattr(self, '_python_bin', None)
         if python_bin is not None:
+            os.environ['PYTHON_BIN'] = python_bin
             return python_bin
 
         python_bin = 'python' + self.config['python_version']
@@ -207,6 +208,7 @@ class Loader(object):
             else:
                 self._python_bin = input(python_bin + ' executable location: ')
 
+        os.environ['PYTHON_BIN'] = self._python_bin
         return self._python_bin
 
 
