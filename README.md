@@ -2,6 +2,7 @@
 
 Manage console programs of multiple sub-projects.
 
+See video demo: https://www.youtube.com/watch?v=qEKoDQ-WB5M  
 See demo project: https://github.com/dozymoe/fireh_runner_demo
 
 
