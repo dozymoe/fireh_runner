@@ -22,20 +22,6 @@ def setup(loader, variant):
     if os.path.exists(venv_dir):
         rmtree(venv_dir, ignore_errors=True)
 
-    if use_symlink:
-        modules_link = os.path.abspath(os.path.join(work_dir, 'python_modules'))
-
-        # see: https://stackoverflow.com/a/9964440
-        if sys.maxsize > 2**32:
-            arch = 64
-        else:
-            arch = 32
-
-        sitepackages = os.path.join(venv_dir, 'lib%i' % arch,
-                'python%s' % loader.config['python_version'], 'site-packages')
-
-        loader.force_symlink(sitepackages, modules_link)
-
     loader.setup_virtualenv()
 
     cmds_pip_install = [python_bin, '-m', 'pip', 'install', '--user']
@@ -54,3 +40,22 @@ def setup(loader, variant):
 
     if os.path.exists(reqtxt_path):
         check_call(cmds_pip_install + ['-r', reqtxt_path])
+
+    if use_symlink:
+        modules_link = os.path.abspath(os.path.join(work_dir, 'python_modules'))
+
+        lib_dir = os.path.join(venv_dir, 'lib')
+        if not os.path.exists(lib_dir):
+            # see: https://stackoverflow.com/a/9964440
+            if sys.maxsize > 2**32:
+                arch = 64
+            else:
+                arch = 32
+            lib_dir = os.path.join(venv_dir, 'lib%i' % arch)
+
+        if os.path.exists(lib_dir):
+            sitepackages = os.path.join(lib_dir,
+                'python%s' % loader.config['python_version'], 'site-packages')
+
+            loader.force_symlink(sitepackages, modules_link)
+

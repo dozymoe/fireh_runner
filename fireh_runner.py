@@ -169,7 +169,7 @@ class Loader(object):
                 os.remove(link_name)
                 os.symlink(target, link_name)
             else:
-                raise e
+                pass
 
 
     @staticmethod
