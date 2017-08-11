@@ -188,9 +188,19 @@ class Loader(object):
 
 
     def get_binargs(self, script, *args):
-        python_bin = self.get_python_bin()
         venv_dir = self.get_virtualenv_dir()
-        return [python_bin, os.path.join(venv_dir, 'bin', script)] + list(args)
+        script_path = os.path.join(venv_dir, 'bin', script)
+        if os.path.exists(script_path):
+            python_bin = self.get_python_bin()
+            executable = [python_bin, script_path]
+        else:
+            script_path = find_executable(script)
+            if script_path is not None:
+                executable = [script_path]
+            else:
+                raise RuntimeError('Cannot find executable for ' + script)
+
+        return executable + list(args)
 
 
     def get_python_bin(self):
