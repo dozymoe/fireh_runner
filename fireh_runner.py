@@ -194,11 +194,7 @@ class Loader(object):
             python_bin = self.get_python_bin()
             executable = [python_bin, script_path]
         else:
-            script_path = find_executable(script)
-            if script_path is not None:
-                executable = [script_path]
-            else:
-                raise RuntimeError('Cannot find executable for ' + script)
+            raise RuntimeError('Cannot find executable for ' + script)
 
         return executable + list(args)
 
