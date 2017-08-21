@@ -310,7 +310,10 @@ runner_dir = os.path.dirname(os.path.realpath(__file__))
 sys.path[0] = root_dir
 
 try:
-    with open(os.path.join(root_dir, 'etc', 'runner.json')) as f:
+    runner_config_file = os.environ.get('RUNNER_CONFIG_FILE',
+            os.path.join(root_dir, 'etc', 'runner.json'))
+
+    with open(runner_config_file) as f:
         runner_config = json_loadf(f)
 except Exception as e: # pylint:disable=broad-except
     sys.stderr.write('Unable read configuration file etc/runner.json:\n' +\
