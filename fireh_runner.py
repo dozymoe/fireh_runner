@@ -301,36 +301,40 @@ class Loader(object):
         return fixed_path
 
 
-root_dir = os.environ.get('ROOT_DIR', os.path.dirname(
-        os.path.abspath(__file__)))
+if __name__ == '__main__':
+    root_dir = os.environ.get('ROOT_DIR', os.path.dirname(
+            os.path.abspath(__file__)))
 
-root_dir = Loader.fix_pathname(root_dir)
+    root_dir = Loader.fix_pathname(root_dir)
 
-runner_dir = os.path.dirname(os.path.realpath(__file__))
-sys.path[0] = root_dir
+    runner_dir = os.path.dirname(os.path.realpath(__file__))
+    sys.path[0] = root_dir
 
-try:
-    runner_config_file = os.environ.get('RUNNER_CONFIG_FILE',
-            os.path.join(root_dir, 'etc', 'runner.json'))
+    try:
+        if 'RUNNER_CONFIG_FILE' in os.environ:
+            runner_config_file = os.environ['RUNNER_CONFIG_FILE']
+        else:
+            runner_config_file = os.path.join(root_dir, 'etc', 'runner.json')
+            os.environ['RUNNER_CONFIG_FILE'] = runner_config_file
 
-    with open(runner_config_file) as f:
-        runner_config = json_loadf(f)
-except Exception as e: # pylint:disable=broad-except
-    sys.stderr.write('Unable read configuration file etc/runner.json:\n' +\
-            repr(e) + '\n')
+        with open(runner_config_file) as f:
+            runner_config = json_loadf(f)
+    except Exception as e: # pylint:disable=broad-except
+        sys.stderr.write('Unable read configuration file etc/runner.json:\n' +\
+                repr(e) + '\n')
 
-    exit(-1)
+        exit(-1)
 
-runner_config['work_dir'] = root_dir
-os.environ['ROOT_DIR'] = root_dir
+    runner_config['work_dir'] = root_dir
+    os.environ['ROOT_DIR'] = root_dir
 
-argparse = ArgumentParser()
-subparsers = argparse.add_subparsers(dest='_command_')
-loader = Loader(runner_config)
+    argparse = ArgumentParser()
+    subparsers = argparse.add_subparsers(dest='_command_')
+    loader = Loader(runner_config)
 
-for module_name in runner_config.get('modules', []):
-    mod = loader.load_module(module_name)
-    loader.register(subparsers, mod)
+    for module_name in runner_config.get('modules', []):
+        mod = loader.load_module(module_name)
+        loader.register(subparsers, mod)
 
-os.chdir(root_dir)
-exit(loader.execute(argparse.parse_args()))
+    os.chdir(root_dir)
+    exit(loader.execute(argparse.parse_args()))
