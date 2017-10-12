@@ -71,5 +71,5 @@ def setup(loader, variant):
     if os.path.exists(wscript_path):
         loader.setup_virtualenv()
         check_call(loader.get_binargs('waf', 'configure'))
-        check_call(loader.get_binargs('waf', 'clean', 'build'))
-        check_call(loader.get_binargs('waf', 'build'))
+        check_call(loader.get_binargs('waf', 'build', '-j1'))
+        check_call(loader.get_binargs('waf', 'build', '-j1'))
