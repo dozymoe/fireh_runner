@@ -25,7 +25,8 @@ def odoo(loader, project=None, variant=None, *args):
     work_dir = config.get('work_dir', project)
     work_dir = loader.expand_path(work_dir)
 
-    binargs = loader.get_binargs('odoo')
+    python_bin = loader.get_python_bin()
+    binargs = [python_bin, __file__]
     if config_file:
         binargs.append('--config=' + config_file)
     binargs += list(args)
@@ -46,3 +47,15 @@ def odoo_setup(loader, project=None, variant=None, *args):
 
 
 commands = (odoo, odoo_setup)
+
+
+def main():
+    # set server timezone in UTC before time module imported
+    __import__('os').environ['TZ'] = 'UTC'
+    __import__('pkg_resources').declare_namespace('odoo.addons')
+    import odoo
+    odoo.cli.main()
+
+
+if __name__ == '__main__':
+    main()
