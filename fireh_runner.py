@@ -302,6 +302,7 @@ class Loader(object):
 
 
 if __name__ == '__main__':
+    current_dir = os.environ.get('CURRENT_DIR', os.getcwd())
     root_dir = os.environ.get('ROOT_DIR', os.path.dirname(
             os.path.abspath(__file__)))
 
@@ -327,6 +328,9 @@ if __name__ == '__main__':
 
     runner_config['work_dir'] = root_dir
     os.environ['ROOT_DIR'] = root_dir
+
+    runner_config['current_dir'] = current_dir
+    os.environ['CURRENT_DIR'] = current_dir
 
     argparse = ArgumentParser()
     subparsers = argparse.add_subparsers(dest='_command_')
