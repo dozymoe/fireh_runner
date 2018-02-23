@@ -26,10 +26,11 @@ def odoo(loader, project=None, variant=None, *args):
     work_dir = loader.expand_path(work_dir)
 
     python_bin = loader.get_python_bin()
-    binargs = [python_bin, __file__]
+    # bugfix, command like `odoo.py shell`, the word 'shell'  must be mentioned
+    # before we define --config, weird
+    binargs = [python_bin, __file__] + list(args)
     if config_file:
         binargs.append('--config=' + config_file)
-    binargs += list(args)
 
     os.chdir(work_dir)
     os.execvp(binargs[0], binargs)
