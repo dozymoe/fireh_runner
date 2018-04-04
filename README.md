@@ -55,8 +55,8 @@ Then create "etc/runner.json" with the content like this:
 
 ## Using
 
-Just run `./runner` to see what options you have, these commands were
-provided by "modules" section in "etc/runner.json".
+"Modules" section in "etc/runner.json" provides the command `./runner` to run 
+to see options existed.
 
 If you run something like `./runner pip install --upgrade MODULE`, this will
 break with `error: unrecognized arguments: --upgrade MODULE`. Do it like this:
