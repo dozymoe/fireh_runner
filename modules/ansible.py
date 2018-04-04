@@ -37,6 +37,24 @@ def ansible(loader, project=None, variant=None, *args):
     os.execvp(binargs[0], binargs)
 
 
+def ansible_doc(loader, project=None, variant=None, *args):
+    """ Ansible modules documentation.
+    """
+    loader.setup_virtualenv()
+
+    project, variant = loader.setup_project_env(project, variant)
+
+    config = loader.config.get('configuration', {})
+    config = config.get(variant, {})
+    config = config.get(project, {})
+
+    loader.setup_shell_env(config.get('shell_env', {}))
+
+    binargs = loader.get_binargs('ansible-doc')
+    binargs += list(args)
+    os.execvp(binargs[0], binargs)
+
+
 def ansible_playbook(loader, project=None, variant=None, *args):
     """ Server provisioning.
     """
@@ -70,4 +88,4 @@ def ansible_playbook(loader, project=None, variant=None, *args):
     os.execvp(binargs[0], binargs)
 
 
-commands = (ansible, ansible_playbook)
+commands = (ansible, ansible_doc, ansible_playbook)
