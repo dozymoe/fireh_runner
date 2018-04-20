@@ -11,15 +11,21 @@ except ImportError:
 
 def pip(loader, *args):
     """Install or uninstall python packages."""
-    loader.setup_virtualenv()
+    venv_type = loader.setup_virtualenv()
     python_bin = loader.get_python_bin()
 
     pip_args = list(args)
     for arg in args:
         if arg.startswith('-'):
             continue
-        elif arg == 'install' or arg == 'freeze':
-            pip_args.append('--user')
+        elif arg == 'install':
+            if venv_type == 'python':
+                pip_args.append('--user')
+            pip_args.extend(loader.config.get('pip_install_args', []))
+
+        elif arg == 'freeze':
+            if venv_type == 'python':
+                pip_args.append('--user')
         else:
             break
 
@@ -29,10 +35,13 @@ def pip(loader, *args):
 
 def pip_install(loader, save=None, *args):
     """Install python packages."""
-    loader.setup_virtualenv()
+    venv_type = loader.setup_virtualenv()
     python_bin = loader.get_python_bin()
 
-    cmds_pip_install = [python_bin, '-m', 'pip', 'install', '--user']
+    cmds_pip_install = [python_bin, '-m', 'pip', 'install']
+    if venv_type == 'python':
+        cmds_pip_install.append('--user')
+
     cmds_pip_install.extend(loader.config.get('pip_install_args', []))
 
     binargs = cmds_pip_install + list(args)
@@ -50,4 +59,4 @@ def pip_uninstall(loader, save=None, *args):
     os.execvp(binargs[0], binargs)
 
 
-commands = (pip, pip_install, pip_uninstall)
+commands = (pip,)

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 from argparse import ArgumentParser
 from collections import Mapping, Sequence
@@ -83,13 +83,29 @@ class Loader(object):
     def setup_virtualenv(self):
         venv_dir = self.get_virtualenv_dir()
         venv_bin_dir = os.path.join(venv_dir, 'bin')
+        venv_type = self.config.get('virtualenv_type', 'python')
 
-        os.environ['PYTHONUSERBASE'] = venv_dir
+        if venv_type == 'virtualenv':
+            activate_file = os.path.join(venv_bin_dir,
+                    'activate_this.py')
 
-        paths = os.environ['PATH'].split(os.pathsep)
-        if paths[0] != venv_bin_dir:
-            paths.insert(0, venv_bin_dir)
-            os.environ['PATH'] = os.pathsep.join(paths)
+            try:
+                execfile(activate_file, dict(__file__=activate_file))
+            except NameError:
+                import runpy
+                runpy.run_path(activate_file)
+
+        else:
+            # PYTHONUSERBASE is the default
+
+            os.environ['PYTHONUSERBASE'] = venv_dir
+
+            paths = os.environ['PATH'].split(os.pathsep)
+            if paths[0] != venv_bin_dir:
+                paths.insert(0, venv_bin_dir)
+                os.environ['PATH'] = os.pathsep.join(paths)
+
+        return venv_type
 
 
     @staticmethod
@@ -199,11 +215,12 @@ class Loader(object):
         return executable + list(args)
 
 
-    def get_python_bin(self):
-        python_bin = getattr(self, '_python_bin', None)
-        if python_bin is not None:
-            os.environ['PYTHON_BIN'] = python_bin
-            return python_bin
+    def get_python_bin(self, cache=True):
+        if cache:
+            python_bin = getattr(self, '_python_bin', None)
+            if python_bin is not None:
+                os.environ['PYTHON_BIN'] = python_bin
+                return python_bin
 
         python_bin = 'python' + self.config['python_version']
         self._python_bin = find_executable(python_bin)

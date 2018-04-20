@@ -3,13 +3,13 @@
 Manage console programs of multiple sub-projects.
 
 See video demo: https://www.youtube.com/watch?v=qEKoDQ-WB5M  
-See demo project: https://github.com/dozymoe/fireh_runner_demo
+See demo project: https://github.com/dozymoe/fireh\_runner\_demo
 
 
 ## Installation
 
 `git clone` into a directory under your main project, then create a symlink of
-"fireh_runner.py", for example: `ln -s fireh_runner/fireh_runner.py runner`.
+"fireh\_runner.py", for example: `ln -s fireh_runner/fireh_runner.py runner`.
 
 Then create "etc/runner.json" with the content like this:
 
@@ -34,6 +34,7 @@ Then create "etc/runner.json" with the content like this:
         "default_variant": "development",
 
         "python_version": "3.5",
+        "virtualenv_type": "python",
         "virtualenv_dir": ".virtualenv",
         "no_symlink_please": false,
         "pip_install_args": [
@@ -55,7 +56,7 @@ Then create "etc/runner.json" with the content like this:
 
 ## Using
 
-Just run `./runner` to see what options you have, these commands were
+Just run `./runner --help` to see what options you have, these commands were
 provided by "modules" section in "etc/runner.json".
 
 If you run something like `./runner pip install --upgrade MODULE`, this will
@@ -66,13 +67,17 @@ Run `./runner pip --help` and you'll see that the pip command only recognize
 `args` as positional arguments and `--help` as optional arguments, it doesn't
 recognize `--upgrade`.
 
+By default fireh\_runner uses PYTHONUSERBASE, you can set `virtualenv_type`
+to "virtualenv" to use python-virtualenv instead.
+
 
 ## Windows users
 
-If you wanted to use `runner setup` you need symlink support.
+If you wanted to use `runner setup` you need symlink support, or you can set
+`no_symlink_please` to `true` then files will be copied instead.
 
-You need to be regular user (not administrators), and the Local Policies for
-creating symbolic links needs to be tweaked, see:
+For enabling symlink support you need to be regular user (not administrators),
+and the Local Policies for creating symbolic links needs to be tweaked, see:
 http://stackoverflow.com/a/8464306
 
 Instructions:

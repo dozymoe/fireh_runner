@@ -16,15 +16,23 @@ def setup(loader, variant):
 
     ## python virtualenv
 
+    venv_type = loader.config.get('virtualenv_type', 'python')
     venv_dir = os.path.realpath(os.path.join(work_dir,
             loader.config['virtualenv_dir']))
 
     if os.path.exists(venv_dir):
         rmtree(venv_dir, ignore_errors=True)
 
-    loader.setup_virtualenv()
+    if venv_type == 'virtualenv':
+        check_call([python_bin, '-m', 'virtualenv', venv_dir])
 
-    cmds_pip_install = [python_bin, '-m', 'pip', 'install', '--user']
+    loader.setup_virtualenv()
+    python_bin = loader.get_python_bin(cache=False)
+
+    cmds_pip_install = [python_bin, '-m', 'pip', 'install']
+    if venv_type == 'python':
+        cmds_pip_install.append('--user')
+
     cmds_pip_install.extend(loader.config.get('pip_install_args', []))
 
     ## update python pip
