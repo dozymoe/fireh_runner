@@ -5,7 +5,6 @@ Odoo is an OpenERP framework.
 Website: http://www.odoo.com
 """
 import os
-import pexpect
 import sys
 
 
@@ -72,6 +71,7 @@ def odoo_shell(loader, project=None, variant=None, *args):
 
 def odoo_install(loader, project=None, variant=None, *args):
     loader.setup_virtualenv()
+    import pexpect
 
     project, variant = loader.setup_project_env(project, variant)
 
@@ -102,7 +102,7 @@ def odoo_install(loader, project=None, variant=None, *args):
     environ = os.environ.copy()
     environ['IPY_TEST_SIMPLE_PROMPT'] = '1'
     prc = pexpect.spawn(' '.join(binargs), echo=False, env=environ,
-            logfile=sys.stdout)
+            logfile=sys.stdout, timeout=300)
 
     prc.expect(r'In \[\d+\]:')
     prc.sendline("IrModule = env['ir.module.module']")
@@ -128,6 +128,7 @@ def odoo_install(loader, project=None, variant=None, *args):
 
 def odoo_uninstall(loader, project=None, variant=None, *args):
     loader.setup_virtualenv()
+    import pexpect
 
     project, variant = loader.setup_project_env(project, variant)
 
@@ -158,7 +159,7 @@ def odoo_uninstall(loader, project=None, variant=None, *args):
     environ = os.environ.copy()
     environ['IPY_TEST_SIMPLE_PROMPT'] = '1'
     prc = pexpect.spawn(' '.join(binargs), echo=False, env=environ,
-            logfile=sys.stdout)
+            logfile=sys.stdout, timeout=300)
 
     prc.expect(r'In \[\d+\]:')
     prc.sendline("IrModule = env['ir.module.module']")
@@ -184,6 +185,7 @@ def odoo_uninstall(loader, project=None, variant=None, *args):
 
 def odoo_upgrade(loader, project=None, variant=None, *args):
     loader.setup_virtualenv()
+    import pexpect
 
     project, variant = loader.setup_project_env(project, variant)
 
@@ -214,7 +216,7 @@ def odoo_upgrade(loader, project=None, variant=None, *args):
     environ = os.environ.copy()
     environ['IPY_TEST_SIMPLE_PROMPT'] = '1'
     prc = pexpect.spawn(' '.join(binargs), echo=False, env=environ,
-            logfile=sys.stdout)
+            logfile=sys.stdout, timeout=300)
 
     prc.expect(r'In \[\d+\]:')
     prc.sendline("IrModule = env['ir.module.module']")
