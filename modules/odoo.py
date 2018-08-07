@@ -6,6 +6,7 @@ Website: http://www.odoo.com
 """
 import os
 import sys
+from time import sleep
 
 SHELL_TIMEOUT = None
 
@@ -121,11 +122,24 @@ def odoo_install(loader, project=None, variant=None, *args):
                 "'%s')]).exists()" % mod)
 
         prc.expect(r'In \[\d+\]:')
-        prc.sendline("if mod and mod.state not in ('installed', " +\
-                "'to upgrade'): mod.button_immediate_install()")
+        prc.sendline("if not mod:")
+        prc.expect(r'\s+\.+:')
+        prc.sendline("    print('Module \"%s\" not found!')" % mod)
+        prc.expect(r'\s+\.+:')
+        prc.sendline("    quit()")
+        prc.expect(r'\s+\.+:')
+        prc.sendline("")
 
-    prc.expect(r'In \[\d+\]:')
-    prc.sendline('quit')
+        exp = prc.expect([pexpect.EOF, r'In \[\d+\]:'])
+        if exp == 0:
+            break
+        else:
+            prc.sendline("if mod and mod.state not in ('installed', " +\
+                    "'to upgrade'): mod.button_immediate_install()")
+
+    else:
+        prc.expect(r'In \[\d+\]:')
+        prc.sendline('quit')
 
 
 def odoo_uninstall(loader, project=None, variant=None, *args):
@@ -178,8 +192,20 @@ def odoo_uninstall(loader, project=None, variant=None, *args):
                 "'%s')]).exists()" % mod)
 
         prc.expect(r'In \[\d+\]:')
-        prc.sendline("if mod.state != 'uninstalled': " +\
-                "mod.button_immediate_uninstall()")
+        prc.sendline("if not mod:")
+        prc.expect(r'\s+\.+:')
+        prc.sendline("    print('Module \"%s\" not found!')" % mod)
+        prc.expect(r'\s+\.+:')
+        prc.sendline("    quit()")
+        prc.expect(r'\s+\.+:')
+        prc.sendline("")
+
+        exp = prc.expect([pexpect.EOF, r'In \[\d+\]:'])
+        if exp == 0:
+            break
+        else:
+            prc.sendline("if mod.state != 'uninstalled': " +\
+                    "mod.button_immediate_uninstall()")
 
     prc.expect(r'In \[\d+\]:')
     prc.sendline('quit')
@@ -239,8 +265,20 @@ def odoo_upgrade(loader, project=None, variant=None, *args):
                 "'to upgrade'): mod.button_immediate_install()")
 
         prc.expect(r'In \[\d+\]:')
-        prc.sendline("if mod and mod.state == 'installed': " +\
-                "mod.button_immediate_upgrade()")
+        prc.sendline("if not mod:")
+        prc.expect(r'\s+\.+:')
+        prc.sendline("    print('Module \"%s\" not found!')" % mod)
+        prc.expect(r'\s+\.+:')
+        prc.sendline("    quit()")
+        prc.expect(r'\s+\.+:')
+        prc.sendline("")
+
+        exp = prc.expect([pexpect.EOF, r'In \[\d+\]:'])
+        if exp == 0:
+            break
+        else:
+            prc.sendline("if mod and mod.state == 'installed': " +\
+                    "mod.button_immediate_upgrade()")
 
     prc.expect(r'In \[\d+\]:')
     prc.sendline('quit')
