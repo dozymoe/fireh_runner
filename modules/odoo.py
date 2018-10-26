@@ -284,13 +284,23 @@ def odoo_upgrade(loader, project=None, variant=None, *args):
     prc.sendline('quit')
 
 def odoo_setup(loader, project=None, variant=None, *args):
-    loader.setup_virtualenv()
+    venv_type = loader.setup_virtualenv()
     python_bin = loader.get_python_bin()
 
-    work_dir = os.path.join(loader.config['work_dir'], 'lib', 'odoo')
+    project, variant = loader.setup_project_env(project, variant)
 
-    binargs = [python_bin, 'setup.py', 'install', '--user']
-    os.chdir(work_dir)
+    config = loader.config.get('configuration', {})
+    config = config.get(variant, {})
+    config = config.get(project, {})
+
+    odoo_dir = os.path.join(loader.config['work_dir'],
+            config.get('odoo_dir', 'lib/odoo'))
+
+    binargs = [python_bin, 'setup.py', 'install']
+    if venv_type == 'python':
+        binargs.append('--user')
+
+    os.chdir(odoo_dir)
     os.execvp(binargs[0], binargs)
 
 
