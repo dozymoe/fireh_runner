@@ -68,7 +68,7 @@ class Loader(object):
 
         variant = self.config['variant'] = variant or\
                 os.environ.get('PROJECT_VARIANT',
-                self.config.get('default_variant'))
+                self.config.get('default_variant', 'default'))
 
         os.environ['PROJECT_NAME'] = project
         os.environ['PROJECT_VARIANT'] = variant
@@ -200,7 +200,7 @@ class Loader(object):
 
     def get_virtualenv_dir(self):
         return os.path.join(self.config['work_dir'],
-                self.config['virtualenv_dir'])
+                self.config.get('virtualenv_dir', '.virtualenv'))
 
 
     def get_binargs(self, script, *args):
