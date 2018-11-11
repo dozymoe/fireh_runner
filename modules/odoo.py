@@ -105,7 +105,7 @@ def odoo_install(loader, project=None, variant=None, *args):
     environ = os.environ.copy()
     environ['IPY_TEST_SIMPLE_PROMPT'] = '1'
     prc = pexpect.spawn(' '.join(binargs), echo=False, env=environ,
-            logfile=sys.stdout, timeout=SHELL_TIMEOUT)
+            logfile=sys.stdout, encoding='utf-8', timeout=SHELL_TIMEOUT)
 
     prc.expect(r'In \[\d+\]:')
     prc.sendline("IrModule = env['ir.module.module']")
@@ -175,7 +175,7 @@ def odoo_uninstall(loader, project=None, variant=None, *args):
     environ = os.environ.copy()
     environ['IPY_TEST_SIMPLE_PROMPT'] = '1'
     prc = pexpect.spawn(' '.join(binargs), echo=False, env=environ,
-            logfile=sys.stdout, timeout=SHELL_TIMEOUT)
+            logfile=sys.stdout, encoding='utf-8', timeout=SHELL_TIMEOUT)
 
     prc.expect(r'In \[\d+\]:')
     prc.sendline("IrModule = env['ir.module.module']")
@@ -244,7 +244,7 @@ def odoo_upgrade(loader, project=None, variant=None, *args):
     environ = os.environ.copy()
     environ['IPY_TEST_SIMPLE_PROMPT'] = '1'
     prc = pexpect.spawn(' '.join(binargs), echo=False, env=environ,
-            logfile=sys.stdout, timeout=SHELL_TIMEOUT)
+            logfile=sys.stdout, encoding='utf-8', timeout=SHELL_TIMEOUT)
 
     prc.expect(r'In \[\d+\]:')
     prc.sendline("IrModule = env['ir.module.module']")
