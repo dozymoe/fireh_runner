@@ -40,7 +40,13 @@ def trytond(loader, project=None, variant=None, *args):
     work_dir = config.get('work_dir', project)
     work_dir = loader.expand_path(work_dir)
 
-    binargs = loader.get_binargs('trytond')
+    bindir = config.get('trytond_bin_dir')
+    if bindir:
+        python_bin = loader.get_python_bin()
+        binargs = [python_bin, os.path.join(loader.config['work_dir'], bindir,
+                'trytond')]
+    else:
+        binargs = loader.get_binargs('trytond')
     if config_file:
         binargs += ['--config', config_file]
     if database_name:
@@ -72,7 +78,13 @@ def trytond_admin(loader, project=None, variant=None, *args):
     work_dir = config.get('work_dir', project)
     work_dir = loader.expand_path(work_dir)
 
-    binargs = loader.get_binargs('trytond-admin')
+    bindir = config.get('trytond_bin_dir')
+    if bindir:
+        python_bin = loader.get_python_bin()
+        binargs = [python_bin, os.path.join(loader.config['work_dir'], bindir,
+                'trytond-admin')]
+    else:
+        binargs = loader.get_binargs('trytond-admin')
     if config_file:
         binargs += ['--config', config_file]
     if database_name:
@@ -103,7 +115,13 @@ def trytond_cron(loader, project=None, variant=None, *args):
     work_dir = config.get('work_dir', project)
     work_dir = loader.expand_path(work_dir)
 
-    binargs = loader.get_binargs('trytond-cron')
+    bindir = config.get('trytond_bin_dir')
+    if bindir:
+        python_bin = loader.get_python_bin()
+        binargs = [python_bin, os.path.join(loader.config['work_dir'], bindir,
+                'trytond-cron')]
+    else:
+        binargs = loader.get_binargs('trytond-cron')
     if config_file:
         binargs += ['--config', config_file]
     if database_name:
@@ -134,7 +152,13 @@ def trytond_worker(loader, project=None, variant=None, *args):
     work_dir = config.get('work_dir', project)
     work_dir = loader.expand_path(work_dir)
 
-    binargs = loader.get_binargs('trytond-worker')
+    bindir = config.get('trytond_bin_dir')
+    if bindir:
+        python_bin = loader.get_python_bin()
+        binargs = [python_bin, os.path.join(loader.config['work_dir'], bindir,
+                'trytond-worker')]
+    else:
+        binargs = loader.get_binargs('trytond-worker')
     if config_file:
         binargs += ['--config', config_file]
     if database_name:
@@ -165,7 +189,13 @@ def tryton(loader, project=None, variant=None, *args):
     work_dir = config.get('work_dir', project)
     work_dir = loader.expand_path(work_dir)
 
-    binargs = loader.get_binargs('tryton')
+    bindir = config.get('tryton_bin_dir')
+    if bindir:
+        python_bin = loader.get_python_bin()
+        binargs = [python_bin, os.path.join(loader.config['work_dir'], bindir,
+                'tryton')]
+    else:
+        binargs = loader.get_binargs('tryton')
     if config_file:
         binargs += ['--config', config_file]
     if database_name:
