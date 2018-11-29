@@ -6,7 +6,7 @@ def setup(loader, variant):
     venv_type = loader.setup_virtualenv()
     python_bin = loader.get_python_bin()
 
-    project, variant = loader.setup_project_env(project, variant)
+    project, variant = loader.setup_project_env(None, variant)
 
     config = loader.config.get('configuration', {})
     config = config.get(variant, {})
