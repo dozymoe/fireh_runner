@@ -104,9 +104,15 @@ def odoo_install(loader, project=None, variant=None, *args):
 
     environ = os.environ.copy()
     environ['IPY_TEST_SIMPLE_PROMPT'] = '1'
-    prc = pexpect.spawn(' '.join(binargs), echo=False, env=environ,
-            logfile=sys.stdout, encoding='utf-8', timeout=SHELL_TIMEOUT)
-
+    spawn_args = {
+        'echo': False,
+        'env': environ,
+        'logfile': sys.stdout,
+        'timeout': SHELL_TIMEOUT,
+    }
+    if sys.version_info[0] > 2:
+        spawn_args['encoding'] = 'utf-8'
+    prc = pexpect.spawn(' '.join(binargs), **spawn_args)
     prc.expect(r'In \[\d+\]:')
     prc.sendline("IrModule = env['ir.module.module']")
     for mod in args:
@@ -174,9 +180,15 @@ def odoo_uninstall(loader, project=None, variant=None, *args):
 
     environ = os.environ.copy()
     environ['IPY_TEST_SIMPLE_PROMPT'] = '1'
-    prc = pexpect.spawn(' '.join(binargs), echo=False, env=environ,
-            logfile=sys.stdout, encoding='utf-8', timeout=SHELL_TIMEOUT)
-
+    spawn_args = {
+        'echo': False,
+        'env': environ,
+        'logfile': sys.stdout,
+        'timeout': SHELL_TIMEOUT,
+    }
+    if sys.version_info[0] > 2:
+        spawn_args['encoding'] = 'utf-8'
+    prc = pexpect.spawn(' '.join(binargs), **spawn_args)
     prc.expect(r'In \[\d+\]:')
     prc.sendline("IrModule = env['ir.module.module']")
     for mod in args:
@@ -243,9 +255,15 @@ def odoo_upgrade(loader, project=None, variant=None, *args):
 
     environ = os.environ.copy()
     environ['IPY_TEST_SIMPLE_PROMPT'] = '1'
-    prc = pexpect.spawn(' '.join(binargs), echo=False, env=environ,
-            logfile=sys.stdout, encoding='utf-8', timeout=SHELL_TIMEOUT)
-
+    spawn_args = {
+        'echo': False,
+        'env': environ,
+        'logfile': sys.stdout,
+        'timeout': SHELL_TIMEOUT,
+    }
+    if sys.version_info[0] > 2:
+        spawn_args['encoding'] = 'utf-8'
+    prc = pexpect.spawn(' '.join(binargs), **spawn_args)
     prc.expect(r'In \[\d+\]:')
     prc.sendline("IrModule = env['ir.module.module']")
     for mod in args:
