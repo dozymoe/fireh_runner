@@ -14,7 +14,7 @@ else:
 
 def setup(loader, variant):
     work_dir = loader.config['work_dir']
-    venv_dir = os.path.realpath(loader.config['virtualenv_dir'])
+    venv_dir = loader.get_virtualenv_dir()
     venv_bin_dir = os.path.join(venv_dir, 'bin')
 
     waf_path = os.path.join(venv_bin_dir, 'waf')

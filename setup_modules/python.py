@@ -17,8 +17,7 @@ def setup(loader, variant):
     ## python virtualenv
 
     venv_type = loader.config.get('virtualenv_type', 'python')
-    venv_dir = os.path.realpath(os.path.join(work_dir,
-            loader.config['virtualenv_dir']))
+    venv_dir = loader.get_virtualenv_dir()
 
     if os.path.exists(venv_dir):
         rmtree(venv_dir, ignore_errors=True)
