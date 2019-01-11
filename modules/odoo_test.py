@@ -1,6 +1,7 @@
-""" Odoo module.
+""" Odoo Test module.
 
 Odoo is an OpenERP framework.
+A copy of odoo.py with added features that eases testing.
 
 Website: http://www.odoo.com
 """
@@ -15,13 +16,12 @@ import sys
 
 SHELL_TIMEOUT = None
 SHELL_ENV_CLEANDB = 'RUNNER_SUBPROCESS_ARG_CLEANDB'
-SHELL_ENV_QUIET = 'RUNNER_SUBPROCESS_ARG_QUIET'
 
 logging.basicConfig(level=logging.INFO)
 _logger = logging.getLogger(__name__)
 
 
-def odoo(loader, project=None, variant=None, reset='n', *args):
+def odoo_test(loader, project=None, variant='testing', reset='n', *args):
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -51,7 +51,7 @@ def odoo(loader, project=None, variant=None, reset='n', *args):
     os.execvp(binargs[0], binargs)
 
 
-def odoo_shell(loader, project=None, variant=None, *args):
+def odoo_test_shell(loader, project=None, variant='testing', *args):
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -83,7 +83,8 @@ def odoo_shell(loader, project=None, variant=None, *args):
     os.execvp(binargs[0], binargs)
 
 
-def odoo_install(loader, project=None, variant=None, reset='n', *args):
+def odoo_test_install(loader, project=None, variant='testing', reset='n',
+        *args):
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -113,7 +114,7 @@ def odoo_install(loader, project=None, variant=None, reset='n', *args):
     os.execvp(binargs[0], binargs)
 
 
-def odoo_uninstall(loader, project=None, variant=None, *args):
+def odoo_test_uninstall(loader, project=None, variant='testing', *args):
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -142,7 +143,7 @@ def odoo_uninstall(loader, project=None, variant=None, *args):
     os.execvp(binargs[0], binargs)
 
 
-def odoo_upgrade(loader, project=None, variant=None, *args):
+def odoo_test_upgrade(loader, project=None, variant='testing', *args):
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -184,23 +185,7 @@ def odoo_upgrade(loader, project=None, variant=None, *args):
     exit(0)
 
 
-def odoo_script(loader, project=None, variant=None, quiet='y', *args):
-    """
-    Runs python scripts and provides odoo shell environment.
-
-    Usage example: `./run odoo-script odoo.addons.my_module.scripts.my_script`
-
-    Where my_script is a module name, and the related file is my_script.py.
-    The python script must implements the function below:
-
-    def execute(env, self, odoo, openerp):
-        pass
-
-    It is recommended not to run anything on the module's scope, because some
-    scripts are run as
-    `cat my_module/scripts/other_script.py | ./run odoo-shell` for educational
-    purposes, that is to show how the script can be run inside odoo shell.
-    """
+def odoo_test_list_installed(loader, project=None, variant='testing', *args):
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -219,58 +204,6 @@ def odoo_script(loader, project=None, variant=None, quiet='y', *args):
     work_dir = loader.expand_path(work_dir)
 
     python_bin = loader.get_python_bin()
-    os.environ[SHELL_ENV_QUIET] = quiet
-    # bugfix, command like `odoo.py shell`, the word 'shell'  must be mentioned
-    # before we define --config, weird
-    binargs = [python_bin, __file__, 'script'] + list(args)
-    if config_file:
-        binargs.append('--config=' + config_file)
-
-    os.chdir(work_dir)
-    os.execvp(binargs[0], binargs)
-
-
-def odoo_setup(loader, project=None, variant=None, *args):
-    venv_type = loader.setup_virtualenv()
-    python_bin = loader.get_python_bin()
-
-    project, variant = loader.setup_project_env(project, variant)
-
-    config = loader.config.get('configuration', {})
-    config = config.get(variant, {})
-    config = config.get(project, {})
-
-    odoo_dir = os.path.join(loader.config['work_dir'],
-            config.get('odoo_dir', 'lib/odoo'))
-
-    binargs = [python_bin, 'setup.py', 'install']
-    if venv_type == 'python':
-        binargs.append('--user')
-
-    os.chdir(odoo_dir)
-    os.execvp(binargs[0], binargs)
-
-
-def odoo_list_installed(loader, project=None, variant=None, *args):
-    loader.setup_virtualenv()
-
-    project, variant = loader.setup_project_env(project, variant)
-
-    config = loader.config.get('configuration', {})
-    config = config.get(variant, {})
-    config = config.get(project, {})
-
-    config_file = config.get('config_file')
-    config_file = os.path.join(loader.config['work_dir'],
-            config_file)
-
-    loader.setup_shell_env(config.get('shell_env', {}))
-
-    work_dir = config.get('work_dir', project)
-    work_dir = loader.expand_path(work_dir)
-
-    python_bin = loader.get_python_bin()
-    os.environ[SHELL_ENV_QUIET] = 'y'
     # bugfix, command like `odoo.py shell`, the word 'shell'  must be mentioned
     # before we define --config, weird
     binargs = [python_bin, __file__, 'list-installed'] + list(args)
@@ -281,8 +214,8 @@ def odoo_list_installed(loader, project=None, variant=None, *args):
     os.execvp(binargs[0], binargs)
 
 
-commands = (odoo, odoo_setup, odoo_shell, odoo_install, odoo_uninstall,
-        odoo_upgrade, odoo_script, odoo_list_installed)
+commands = (odoo_test, odoo_test_install, odoo_test_uninstall,
+        odoo_test_upgrade, odoo_test_shell, odoo_test_list_installed)
 
 
 def _run_server():
@@ -290,7 +223,7 @@ def _run_server():
     odoo.cli.main()
 
 
-def _run_silent_server(quiet=False):
+def _run_silent_server():
     import odoo
 
     # Odoo config
@@ -302,8 +235,7 @@ def _run_silent_server(quiet=False):
     config = odoo.tools.config
     config.parse_config(odoo_args)
 
-    if not quiet:
-        odoo.cli.server.report_configuration()
+    odoo.cli.server.report_configuration()
     odoo.service.server.start(preload=[], stop=True)
 
 
@@ -354,25 +286,6 @@ def _reset_database():
         db.commit()
 
 
-def _run_script(quiet=False):
-    from importlib import import_module
-    _run_silent_server(quiet)
-
-    callbacks = []
-    for name in sys.argv[1:]:
-        if name.startswith('-'):
-            continue
-        try:
-            mod = import_module(name)
-            callbacks.append(mod.execute)
-        except ImportError:
-            _logger.error("Unable to load module '%s'.", name)
-            return
-
-    if callbacks:
-        _execute(*callbacks)
-
-
 def _install(env, **kwargs):
     IrModule = env['ir.module.module']
     for name in sys.argv[1:]:
@@ -420,24 +333,22 @@ def main():
 
     if strtobool(os.environ.get(SHELL_ENV_CLEANDB, 'n')):
         _reset_database()
-    quiet = strtobool(os.environ.get(SHELL_ENV_QUIET, 'n'))
 
     if cmd == 'server':
+        sys.argv.append('--test-enable')
         _run_server()
 
     elif cmd == 'install':
-        _run_silent_server(quiet)
+        sys.argv.append('--test-enable')
+        _run_silent_server()
         _execute(_install)
 
     elif cmd == 'uninstall':
-        _run_silent_server(quiet)
+        _run_silent_server()
         _execute(_uninstall)
 
-    elif cmd == 'script':
-        _run_script(quiet)
-
     elif cmd == 'list-installed':
-        _run_silent_server(quiet)
+        _run_silent_server()
         _execute(_list_installed)
 
 
