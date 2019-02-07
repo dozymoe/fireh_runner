@@ -328,12 +328,19 @@ def _list_installed(env, **kwargs):
 
 def main():
     __import__('pkg_resources').declare_namespace('odoo.addons')
-    sys.path.remove(os.path.dirname(__file__))
-    cmd = sys.argv.pop(1)
+    try:
+        sys.path.remove(os.path.dirname(__file__))
+    except:
+        pass
+    try:
+        sys.path.remove(os.path.dirname(os.path.abspath(__file__)))
+    except:
+        pass
 
     if strtobool(os.environ.get(SHELL_ENV_CLEANDB, 'n')):
         _reset_database()
 
+    cmd = sys.argv.pop(1)
     if cmd == 'server':
         sys.argv.append('--test-enable')
         _run_server()
@@ -350,6 +357,10 @@ def main():
     elif cmd == 'list-installed':
         _run_silent_server()
         _execute(_list_installed)
+
+    else:
+        sys.argv.insert(1, cmd)
+        _run_server()
 
 
 if __name__ == '__main__':
