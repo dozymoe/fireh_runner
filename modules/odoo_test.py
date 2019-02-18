@@ -15,13 +15,13 @@ import subprocess
 import sys
 
 SHELL_TIMEOUT = None
-SHELL_ENV_CLEANDB = 'RUNNER_SUBPROCESS_ARG_CLEANDB'
+SHELL_ENV_WITH_SERVER = 'RUNNER_SUBPROCESS_ARGS_WITH_SERVER'
 
 logging.basicConfig(level=logging.INFO)
 _logger = logging.getLogger(__name__)
 
 
-def odoo_test(loader, project=None, variant='testing', reset='n', *args):
+def odoo_test(loader, project=None, variant='testing', *args):
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -40,10 +40,38 @@ def odoo_test(loader, project=None, variant='testing', reset='n', *args):
     work_dir = loader.expand_path(work_dir)
 
     python_bin = loader.get_python_bin()
-    os.environ[SHELL_ENV_CLEANDB] = reset
     # bugfix, command like `odoo.py shell`, the word 'shell'  must be mentioned
     # before we define --config, weird
     binargs = [python_bin, __file__, 'server'] + list(args)
+    if config_file:
+        binargs.append('--config=' + config_file)
+
+    os.chdir(work_dir)
+    os.execvp(binargs[0], binargs)
+
+
+def odoo_test_cleardb(loader, project=None, variant='testing', *args):
+    loader.setup_virtualenv()
+
+    project, variant = loader.setup_project_env(project, variant)
+
+    config = loader.config.get('configuration', {})
+    config = config.get(variant, {})
+    config = config.get(project, {})
+
+    config_file = config.get('config_file')
+    config_file = os.path.join(loader.config['work_dir'],
+            config_file)
+
+    loader.setup_shell_env(config.get('shell_env', {}))
+
+    work_dir = config.get('work_dir', project)
+    work_dir = loader.expand_path(work_dir)
+
+    python_bin = loader.get_python_bin()
+    # bugfix, command like `odoo.py shell`, the word 'shell'  must be mentioned
+    # before we define --config, weird
+    binargs = [python_bin, __file__, 'cleardb'] + list(args)
     if config_file:
         binargs.append('--config=' + config_file)
 
@@ -83,8 +111,7 @@ def odoo_test_shell(loader, project=None, variant='testing', *args):
     os.execvp(binargs[0], binargs)
 
 
-def odoo_test_install(loader, project=None, variant='testing', reset='n',
-        *args):
+def odoo_test_install(loader, project=None, variant='testing', *args):
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -103,7 +130,6 @@ def odoo_test_install(loader, project=None, variant='testing', reset='n',
     work_dir = loader.expand_path(work_dir)
 
     python_bin = loader.get_python_bin()
-    os.environ[SHELL_ENV_CLEANDB] = reset
     # bugfix, command like `odoo.py shell`, the word 'shell'  must be mentioned
     # before we define --config, weird
     binargs = [python_bin, __file__, 'install'] + list(args)
@@ -214,8 +240,9 @@ def odoo_test_list_installed(loader, project=None, variant='testing', *args):
     os.execvp(binargs[0], binargs)
 
 
-commands = (odoo_test, odoo_test_install, odoo_test_uninstall,
-        odoo_test_upgrade, odoo_test_shell, odoo_test_list_installed)
+commands = (odoo_test, odoo_test_cleardb, odoo_test_install,
+        odoo_test_uninstall, odoo_test_upgrade, odoo_test_shell,
+        odoo_test_list_installed)
 
 
 def _run_server():
@@ -223,25 +250,25 @@ def _run_server():
     odoo.cli.main()
 
 
-def _run_silent_server():
+def _load_config(odoo_args):
     import odoo
-
-    # Odoo config
-    odoo_args = ['--no-xmlrpc']
-    module_names = []
     for arg in sys.argv[1:]:
         if arg.startswith('-'):
             odoo_args.append(arg)
-    config = odoo.tools.config
-    config.parse_config(odoo_args)
+    odoo.tools.config.parse_config(odoo_args)
+    return odoo.tools.config
 
-    odoo.cli.server.report_configuration()
+
+def _run_silent_server(quiet=False):
+    import odoo
+    _load_config(['--no-xmlrpc'])
+    if not quiet:
+        odoo.cli.server.report_configuration()
     odoo.service.server.start(preload=[], stop=True)
 
 
 def _execute(*callbacks):
     import odoo
-
     local_vars = {
         'openerp': odoo,
         'odoo': odoo,
@@ -264,19 +291,18 @@ def _execute(*callbacks):
             cr.rollback()
 
 
+def _simple_execute(*callbacks):
+    for callback in callbacks:
+        try:
+            callback()
+        except Exception as e:
+            _logger.exception(e)
+
+
 def _reset_database():
     import odoo
     import psycopg2
-
-    # Odoo config
-    odoo_args = []
-    module_names = []
-    for arg in sys.argv[1:]:
-        if arg.startswith('-'):
-            odoo_args.append(arg)
-    config = odoo.tools.config
-    config.parse_config(odoo_args)
-
+    config = _load_config([])
     dsn = 'postgresql://%s:%s@%s:%s/%s' % (config['db_user'],
             config['db_password'], config['db_host'] or 'localhost',
             config['db_port'] or 5432, config['db_name'])
@@ -337,8 +363,7 @@ def main():
     except:
         pass
 
-    if strtobool(os.environ.get(SHELL_ENV_CLEANDB, 'n')):
-        _reset_database()
+    quiet = strtobool(os.environ.get(SHELL_ENV_QUIET, 'n'))
 
     cmd = sys.argv.pop(1)
     if cmd == 'server':
@@ -347,16 +372,19 @@ def main():
 
     elif cmd == 'install':
         sys.argv.append('--test-enable')
-        _run_silent_server()
+        _run_silent_server(quiet)
         _execute(_install)
 
     elif cmd == 'uninstall':
-        _run_silent_server()
+        _run_silent_server(quiet)
         _execute(_uninstall)
 
     elif cmd == 'list-installed':
-        _run_silent_server()
+        _run_silent_server(quiet)
         _execute(_list_installed)
+
+    elif cmd == 'cleardb':
+        _reset_database()
 
     else:
         sys.argv.insert(1, cmd)
