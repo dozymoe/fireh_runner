@@ -46,7 +46,7 @@ def setup(loader, variant):
         link_fn(reqtxt_var_path, reqtxt_path)
 
     if os.path.exists(reqtxt_path):
-        check_call(cmds_pip_install + ['-r', reqtxt_path])
+        check_call(cmds_pip_install + ['--ignore-installed', '-r', reqtxt_path])
 
     if use_symlink:
         modules_link = os.path.abspath(os.path.join(work_dir, 'python_modules'))
