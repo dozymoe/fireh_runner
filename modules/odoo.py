@@ -9,6 +9,7 @@ import os
 os.environ['TZ'] = 'UTC'
 
 from distutils.util import strtobool
+from functools import partial
 import logging
 import subprocess
 import sys
@@ -392,25 +393,20 @@ def _run_script(quiet=False):
     else:
         _load_config([])
 
-    callbacks = []
-    for name in sys.argv[1:]:
-        if name.startswith('-'):
-            continue
-        try:
-            mod = import_module(name)
-            if with_server:
-                callbacks.append(mod.execute)
-            else:
-                callbacks.append(mod.simple_execute)
-        except ImportError:
-            _logger.error("Unable to load module '%s'.", name)
-            return
-
-    if callbacks:
+    module_name = sys.argv[1]
+    callback_args = []
+    # Remove shell arguments started with '-'
+    for arg in sys.argv[2:]:
+        if not arg.startswith('-'):
+            callback_args.append(arg)
+    try:
+        mod = import_module(module_name)
         if with_server:
-            _execute(*callbacks)
+            _execute(partial(mod.execute, args=callback_args))
         else:
-            _simple_execute(*callbacks)
+            _simple_execute(partial(mod.simple_execute, args=callback_args))
+    except ImportError:
+        _logger.error("Unable to load module '%s'.", name)
 
 
 def _install(env, **kwargs):
