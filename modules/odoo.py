@@ -406,7 +406,7 @@ def _run_script(quiet=False):
         else:
             _simple_execute(partial(mod.simple_execute, args=callback_args))
     except ImportError:
-        _logger.error("Unable to load module '%s'.", name)
+        _logger.error("Unable to load module '%s'.", module_name)
 
 
 def _install(env, **kwargs):
