@@ -6,8 +6,8 @@ import os
 
 def uwsgi(loader, *args):
     loader.setup_virtualenv()
-
-    binargs = ['uwsgi'] + list(args)
+    venv_dir = loader.get_virtualenv_dir()
+    binargs = [os.path.join(venv_dir, 'bin', 'uwsgi')] + list(args)
     os.execvp(binargs[0], binargs)
 
 
@@ -25,8 +25,9 @@ def uwsgi_run(loader, project=None, variant=None, *args):
     socket_path = config.get('socket_path', '/tmp/%s-%s-%s.sock' %\
             (loader.config['package_name'], project, variant))
 
+    venv_dir = loader.get_virtualenv_dir()
     binargs = [
-        'uwsgi',
+        os.path.join(venv_dir, 'bin', 'uwsgi'),
         '--module=%s.wsgi:application' % project,
         '--socket=' + os.path.realpath(socket_path),
         '--chmod-socket',

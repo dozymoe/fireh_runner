@@ -17,6 +17,27 @@ def bin(loader, project=None, variant=None, *args):
     work_dir = config.get('work_dir', project)
     work_dir = loader.expand_path(work_dir)
 
+    venv_dir = loader.get_virtualenv_dir()
+    binargs = [os.path.join(venv_dir, 'bin', args[0]), *args[1:]]
+    os.chdir(work_dir)
+    os.execvp(binargs[0], binargs)
+
+
+def pybin(loader, project=None, variant=None, *args):
+    """ Run executable in virtualenv bin
+    """
+    loader.setup_virtualenv()
+    project, variant = loader.setup_project_env(project, variant)
+
+    config = loader.config.get('configuration', {})
+    config = config.get(variant, {})
+    config = config.get(project, {})
+
+    loader.setup_shell_env(config.get('shell_env', {}))
+
+    work_dir = config.get('work_dir', project)
+    work_dir = loader.expand_path(work_dir)
+
     binargs = loader.get_binargs(args[0], *args[1:])
     os.chdir(work_dir)
     os.execvp(binargs[0], binargs)
@@ -35,4 +56,4 @@ def lsbin(loader):
             print(fname)
 
 
-commands = (bin, lsbin)
+commands = (bin, lsbin, pybin)
