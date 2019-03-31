@@ -9,13 +9,11 @@ scalability and security.
 Website: http://www.tryton.org
 """
 import os
-import sys
-from time import sleep
 
 SHELL_TIMEOUT = None
 
 
-def trytond(loader, project=None, variant=None, *args):
+def trytond(loader, *args, project=None, variant=None):
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -59,7 +57,7 @@ def trytond(loader, project=None, variant=None, *args):
     os.execvp(binargs[0], binargs)
 
 
-def trytond_admin(loader, project=None, variant=None, *args):
+def trytond_admin(loader, *args, project=None, variant=None):
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -95,7 +93,7 @@ def trytond_admin(loader, project=None, variant=None, *args):
     os.execvp(binargs[0], binargs)
 
 
-def trytond_cron(loader, project=None, variant=None, *args):
+def trytond_cron(loader, *args, project=None, variant=None):
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -132,7 +130,7 @@ def trytond_cron(loader, project=None, variant=None, *args):
     os.execvp(binargs[0], binargs)
 
 
-def trytond_worker(loader, project=None, variant=None, *args):
+def trytond_worker(loader, *args, project=None, variant=None):
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -169,7 +167,7 @@ def trytond_worker(loader, project=None, variant=None, *args):
     os.execvp(binargs[0], binargs)
 
 
-def tryton(loader, project=None, variant=None, *args):
+def tryton(loader, *args, project=None, variant=None):
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)

@@ -6,7 +6,7 @@ Website: http://www.doxygen.org
 """
 import os
 
-def doxygen(loader, variant=None, *args):
+def doxygen(loader, *args, variant=None):
     if variant is None:
         variant = os.environ.get('PROJECT_VARIANT',
                 loader.config.get('default_variant'))

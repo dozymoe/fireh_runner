@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from argparse import ArgumentParser
+from argparse import ArgumentParser, RawDescriptionHelpFormatter
 from collections import Mapping, Sequence
 import ctypes
 from distutils.spawn import find_executable # pylint:disable=no-name-in-module,import-error
@@ -131,25 +131,29 @@ class Loader(object):
         for function in module.commands:
             name = function.__name__.replace('_', '-')
 
-            command = argparser.add_parser(name, help=inspect.getdoc(function))
+            desc = inspect.getdoc(function)
+            if desc:
+                desc = desc.strip()
+                head = desc.splitlines()[0]
+            else:
+                head = None
+            command = argparser.add_parser(name, help=head, description=desc,
+                    formatter_class=RawDescriptionHelpFormatter)
 
-            args = list(self.get_function_signature(function))
-            if args[0][0] == 'self':
-                args.pop(0)
-            if args[0][0] == 'loader':
-                args.pop(0)
-
-            for arg in args:
-                if len(arg) == 1:
-                    command.add_argument(arg[0], nargs='*')
-                elif len(arg) == 2:
-                    name = arg[0].replace('_', '-')
-                    command.add_argument('--' + name, dest=arg[0],
-                            required=True, type=arg[1])
+            params = list(self.get_function_signature(function))
+            # First argument/params is always the Loader instance.
+            params.pop(0)
+            for param in params:
+                if len(param) == 1:
+                    command.add_argument(param[0], nargs='*')
+                elif len(param) == 2:
+                    name = param[0].replace('_', '-')
+                    command.add_argument('--' + name, dest=param[0],
+                            required=True, type=param[1])
                 else:
-                    name = arg[0].replace('_', '-')
-                    command.add_argument('--' + name, dest=arg[0],
-                            default=arg[2], type=arg[1])
+                    name = param[0].replace('_', '-')
+                    command.add_argument('--' + name, dest=param[0],
+                            default=param[2], type=param[1])
 
 
     def execute(self, arguments):
@@ -160,20 +164,24 @@ class Loader(object):
                 if name != arguments._command_:
                     continue
 
-                args = list(self.get_function_signature(function))
-                if args[0][0] == 'self':
-                    args.pop(0)
-                if args[0][0] == 'loader':
-                    args.pop(0)
-
-                params = []
-                for arg in args:
-                    if len(arg) == 1:
-                        params.extend(getattr(arguments, arg[0]))
+                args = []
+                kwargs = {}
+                params = list(self.get_function_signature(function))
+                # First argument/params is always the Loader instance.
+                params.pop(0)
+                for param in params:
+                    if len(param) == 1:
+                        args = getattr(arguments, param[0], [])
+                    elif param[0] in ('self', 'loader'):
+                        kwargs[param[0]] = self
                     else:
-                        params.append(getattr(arguments, arg[0]))
+                        try:
+                            default = param[2]
+                        except IndexError:
+                            default = None
+                        kwargs[param[0]] = getattr(arguments, param[0], default)
 
-                return function(self, *params)
+                return function(self, *args, **kwargs)
 
 
     @staticmethod

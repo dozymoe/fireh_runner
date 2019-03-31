@@ -5,14 +5,13 @@ Odoo is an OpenERP framework.
 Website: http://www.odoo.com
 """
 import os
-# set server timezone in UTC before time module imported
-os.environ['TZ'] = 'UTC'
-
 from distutils.util import strtobool
 from functools import partial
 import logging
 import subprocess
 import sys
+# set server timezone in UTC before time module imported
+os.environ['TZ'] = 'UTC'
 
 SHELL_TIMEOUT = None
 SHELL_ENV_QUIET = 'RUNNER_SUBPROCESS_ARG_QUIET'
@@ -22,7 +21,7 @@ logging.basicConfig(level=logging.INFO)
 _logger = logging.getLogger(__name__)
 
 
-def odoo(loader, project=None, variant=None, *args):
+def odoo(loader, *args, project=None, variant=None):
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -51,7 +50,7 @@ def odoo(loader, project=None, variant=None, *args):
     os.execvp(binargs[0], binargs)
 
 
-def odoo_cleardb(loader, project=None, variant=None, *args):
+def odoo_cleardb(loader, *args, project=None, variant=None):
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -80,7 +79,7 @@ def odoo_cleardb(loader, project=None, variant=None, *args):
     os.execvp(binargs[0], binargs)
 
 
-def odoo_shell(loader, project=None, variant=None, *args):
+def odoo_shell(loader, *args, project=None, variant=None):
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -112,7 +111,7 @@ def odoo_shell(loader, project=None, variant=None, *args):
     os.execvp(binargs[0], binargs)
 
 
-def odoo_install(loader, project=None, variant=None, *args):
+def odoo_install(loader, *args, project=None, variant=None):
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -141,7 +140,7 @@ def odoo_install(loader, project=None, variant=None, *args):
     os.execvp(binargs[0], binargs)
 
 
-def odoo_uninstall(loader, project=None, variant=None, *args):
+def odoo_uninstall(loader, *args, project=None, variant=None):
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -170,7 +169,7 @@ def odoo_uninstall(loader, project=None, variant=None, *args):
     os.execvp(binargs[0], binargs)
 
 
-def odoo_upgrade(loader, project=None, variant=None, *args):
+def odoo_upgrade(loader, *args, project=None, variant=None):
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -212,8 +211,8 @@ def odoo_upgrade(loader, project=None, variant=None, *args):
     exit(0)
 
 
-def odoo_script(loader, project=None, variant=None, quiet='y', with_server='y',
-        *args):
+def odoo_script(loader, *args, project=None, variant=None, quiet='y',
+        with_server='y'):
     """
     Runs python scripts and provides odoo shell environment.
 
@@ -263,7 +262,7 @@ def odoo_script(loader, project=None, variant=None, quiet='y', with_server='y',
     os.execvp(binargs[0], binargs)
 
 
-def odoo_setup(loader, project=None, variant=None, *args):
+def odoo_setup(loader, *args, project=None, variant=None):
     venv_type = loader.setup_virtualenv()
     python_bin = loader.get_python_bin()
 
@@ -284,7 +283,7 @@ def odoo_setup(loader, project=None, variant=None, *args):
     os.execvp(binargs[0], binargs)
 
 
-def odoo_list_installed(loader, project=None, variant=None, *args):
+def odoo_list_installed(loader, *args, project=None, variant=None):
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -319,12 +318,12 @@ commands = (odoo, odoo_cleardb, odoo_setup, odoo_shell, odoo_install,
 
 
 def _run_server():
-    import odoo
+    import odoo #pylint:disable=redefined-outer-name
     odoo.cli.main()
 
 
 def _load_config(odoo_args):
-    import odoo
+    import odoo #pylint:disable=redefined-outer-name
     for arg in sys.argv[1:]:
         if arg.startswith('-'):
             odoo_args.append(arg)
@@ -333,7 +332,7 @@ def _load_config(odoo_args):
 
 
 def _run_silent_server(quiet=False):
-    import odoo
+    import odoo #pylint:disable=redefined-outer-name
     _load_config(['--no-xmlrpc'])
     if not quiet:
         odoo.cli.server.report_configuration()
@@ -341,7 +340,7 @@ def _run_silent_server(quiet=False):
 
 
 def _execute(*callbacks):
-    import odoo
+    import odoo #pylint:disable=redefined-outer-name
     local_vars = {
         'openerp': odoo,
         'odoo': odoo,
@@ -357,7 +356,7 @@ def _execute(*callbacks):
             for callback in callbacks:
                 try:
                     callback(**local_vars)
-                except Exception as e:
+                except Exception as e: #pylint:disable=broad-except
                     _logger.exception(e)
                     cr.rollback()
 
@@ -368,12 +367,11 @@ def _simple_execute(*callbacks):
     for callback in callbacks:
         try:
             callback()
-        except Exception as e:
+        except Exception as e: #pylint:disable=broad-except
             _logger.exception(e)
 
 
 def _reset_database():
-    import odoo
     import psycopg2
     config = _load_config([])
     dsn = 'postgresql://%s:%s@%s:%s/%s' % (config['db_user'],
@@ -453,11 +451,11 @@ def main():
     __import__('pkg_resources').declare_namespace('odoo.addons')
     try:
         sys.path.remove(os.path.dirname(__file__))
-    except:
+    except: #pylint:disable=bare-except
         pass
     try:
         sys.path.remove(os.path.dirname(os.path.abspath(__file__)))
-    except:
+    except: #pylint:disable=bare-except
         pass
 
     quiet = strtobool(os.environ.get(SHELL_ENV_QUIET, 'n'))

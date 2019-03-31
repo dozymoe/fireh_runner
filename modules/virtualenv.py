@@ -2,7 +2,7 @@
 """
 import os
 
-def bin(loader, project=None, variant=None, *args):
+def bin(loader, *args, project=None, variant=None): #pylint:disable=redefined-builtin
     """ Run executable in virtualenv bin
     """
     loader.setup_virtualenv()
@@ -23,7 +23,7 @@ def bin(loader, project=None, variant=None, *args):
     os.execvp(binargs[0], binargs)
 
 
-def pybin(loader, project=None, variant=None, *args):
+def pybin(loader, *args, project=None, variant=None):
     """ Run executable in virtualenv bin
     """
     loader.setup_virtualenv()

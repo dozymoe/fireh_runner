@@ -65,4 +65,3 @@ def setup(loader, variant):
                 'python%s' % loader.config['python_version'], 'site-packages')
 
             loader.force_symlink(sitepackages, modules_link)
-

@@ -5,23 +5,23 @@ A copy of odoo.py with added features that eases testing.
 
 Website: http://www.odoo.com
 """
+from distutils.util import strtobool
+import logging
 import os
+import subprocess
+import sys
 # set server timezone in UTC before time module imported
 os.environ['TZ'] = 'UTC'
 
-from distutils.util import strtobool
-import logging
-import subprocess
-import sys
-
 SHELL_TIMEOUT = None
+SHELL_ENV_QUIET = 'RUNNER_SUBPROCESS_ARG_QUIET'
 SHELL_ENV_WITH_SERVER = 'RUNNER_SUBPROCESS_ARGS_WITH_SERVER'
 
 logging.basicConfig(level=logging.INFO)
 _logger = logging.getLogger(__name__)
 
 
-def odoo_test(loader, project=None, variant='testing', *args):
+def odoo_test(loader, *args, project=None, variant='testing'):
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -50,7 +50,7 @@ def odoo_test(loader, project=None, variant='testing', *args):
     os.execvp(binargs[0], binargs)
 
 
-def odoo_test_cleardb(loader, project=None, variant='testing', *args):
+def odoo_test_cleardb(loader, *args, project=None, variant='testing'):
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -79,7 +79,7 @@ def odoo_test_cleardb(loader, project=None, variant='testing', *args):
     os.execvp(binargs[0], binargs)
 
 
-def odoo_test_shell(loader, project=None, variant='testing', *args):
+def odoo_test_shell(loader, *args, project=None, variant='testing'):
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -111,7 +111,7 @@ def odoo_test_shell(loader, project=None, variant='testing', *args):
     os.execvp(binargs[0], binargs)
 
 
-def odoo_test_install(loader, project=None, variant='testing', *args):
+def odoo_test_install(loader, *args, project=None, variant='testing'):
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -140,7 +140,7 @@ def odoo_test_install(loader, project=None, variant='testing', *args):
     os.execvp(binargs[0], binargs)
 
 
-def odoo_test_uninstall(loader, project=None, variant='testing', *args):
+def odoo_test_uninstall(loader, *args, project=None, variant='testing'):
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -169,7 +169,7 @@ def odoo_test_uninstall(loader, project=None, variant='testing', *args):
     os.execvp(binargs[0], binargs)
 
 
-def odoo_test_upgrade(loader, project=None, variant='testing', *args):
+def odoo_test_upgrade(loader, *args, project=None, variant='testing'):
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -211,7 +211,7 @@ def odoo_test_upgrade(loader, project=None, variant='testing', *args):
     exit(0)
 
 
-def odoo_test_list_installed(loader, project=None, variant='testing', *args):
+def odoo_test_list_installed(loader, *args, project=None, variant='testing'):
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -284,7 +284,7 @@ def _execute(*callbacks):
             for callback in callbacks:
                 try:
                     callback(**local_vars)
-                except Exception as e:
+                except Exception as e: #pylint:disable=broad-except
                     _logger.exception(e)
                     cr.rollback()
 
@@ -295,12 +295,11 @@ def _simple_execute(*callbacks):
     for callback in callbacks:
         try:
             callback()
-        except Exception as e:
+        except Exception as e: #pylint:disable=broad-except
             _logger.exception(e)
 
 
 def _reset_database():
-    import odoo
     import psycopg2
     config = _load_config([])
     dsn = 'postgresql://%s:%s@%s:%s/%s' % (config['db_user'],
@@ -356,11 +355,11 @@ def main():
     __import__('pkg_resources').declare_namespace('odoo.addons')
     try:
         sys.path.remove(os.path.dirname(__file__))
-    except:
+    except: #pylint:disable=bare-except
         pass
     try:
         sys.path.remove(os.path.dirname(os.path.abspath(__file__)))
-    except:
+    except: #pylint:disable=bare-except
         pass
 
     quiet = strtobool(os.environ.get(SHELL_ENV_QUIET, 'n'))

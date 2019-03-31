@@ -36,3 +36,5 @@ def setup(loader, variant=None):
 
         os.chdir(work_dir)
         check_call(binargs)
+
+    return 0

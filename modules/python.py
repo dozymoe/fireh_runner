@@ -2,7 +2,7 @@
 """
 import os
 
-def python(loader, project=None, variant=None, *args):
+def python(loader, *args, project=None, variant=None):
     loader.setup_virtualenv()
     python_bin = loader.get_python_bin()
 

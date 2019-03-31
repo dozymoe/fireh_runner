@@ -6,7 +6,7 @@ Website: http://www.djangoproject.com
 """
 import os
 
-def django_admin(loader, project=None, variant=None, *args):
+def django_admin(loader, *args, project=None, variant=None):
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -22,7 +22,7 @@ def django_admin(loader, project=None, variant=None, *args):
     os.execvp(binargs[0], binargs)
 
 
-def django_manage(loader, project=None, variant=None, *args):
+def django_manage(loader, *args, project=None, variant=None):
     loader.setup_virtualenv()
     python_bin = loader.get_python_bin()
 
@@ -42,7 +42,7 @@ def django_manage(loader, project=None, variant=None, *args):
     os.execvp(binargs[0], binargs)
 
 
-def django_script(loader, project=None, variant=None, *args):
+def django_script(loader, *args, project=None, variant=None):
     loader.setup_virtualenv()
     python_bin = loader.get_python_bin()
 
