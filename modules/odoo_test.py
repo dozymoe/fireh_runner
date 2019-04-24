@@ -261,7 +261,7 @@ def _load_config(odoo_args):
 
 def _run_silent_server(quiet=False):
     import odoo
-    _load_config(['--no-xmlrpc'])
+    _load_config(['--no-xmlrpc', '--workers=0', '--max-cron-threads=0'])
     if not quiet:
         odoo.cli.server.report_configuration()
     odoo.service.server.start(preload=[], stop=True)

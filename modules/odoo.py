@@ -21,7 +21,7 @@ logging.basicConfig(level=logging.INFO)
 _logger = logging.getLogger(__name__)
 
 
-def odoo(loader, *args, project=None, variant=None):
+def odoo(loader, project=None, variant=None, *args):
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -50,7 +50,7 @@ def odoo(loader, *args, project=None, variant=None):
     os.execvp(binargs[0], binargs)
 
 
-def odoo_cleardb(loader, *args, project=None, variant=None):
+def odoo_cleardb(loader, project=None, variant=None, *args):
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -79,7 +79,7 @@ def odoo_cleardb(loader, *args, project=None, variant=None):
     os.execvp(binargs[0], binargs)
 
 
-def odoo_shell(loader, *args, project=None, variant=None):
+def odoo_shell(loader, project=None, variant=None, *args):
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -111,7 +111,7 @@ def odoo_shell(loader, *args, project=None, variant=None):
     os.execvp(binargs[0], binargs)
 
 
-def odoo_install(loader, *args, project=None, variant=None):
+def odoo_install(loader, project=None, variant=None, *args):
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -140,7 +140,7 @@ def odoo_install(loader, *args, project=None, variant=None):
     os.execvp(binargs[0], binargs)
 
 
-def odoo_uninstall(loader, *args, project=None, variant=None):
+def odoo_uninstall(loader, project=None, variant=None, *args):
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -169,7 +169,7 @@ def odoo_uninstall(loader, *args, project=None, variant=None):
     os.execvp(binargs[0], binargs)
 
 
-def odoo_upgrade(loader, *args, project=None, variant=None):
+def odoo_upgrade(loader, project=None, variant=None, *args):
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -211,8 +211,8 @@ def odoo_upgrade(loader, *args, project=None, variant=None):
     exit(0)
 
 
-def odoo_script(loader, *args, project=None, variant=None, quiet='y',
-        with_server='y'):
+def odoo_script(loader, project=None, variant=None, quiet='y', with_server='y',
+        *args):
     """
     Runs python scripts and provides odoo shell environment.
 
@@ -262,7 +262,7 @@ def odoo_script(loader, *args, project=None, variant=None, quiet='y',
     os.execvp(binargs[0], binargs)
 
 
-def odoo_setup(loader, *args, project=None, variant=None):
+def odoo_setup(loader, project=None, variant=None, *args):
     venv_type = loader.setup_virtualenv()
     python_bin = loader.get_python_bin()
 
@@ -283,7 +283,7 @@ def odoo_setup(loader, *args, project=None, variant=None):
     os.execvp(binargs[0], binargs)
 
 
-def odoo_list_installed(loader, *args, project=None, variant=None):
+def odoo_list_installed(loader, project=None, variant=None, *args):
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -333,7 +333,7 @@ def _load_config(odoo_args):
 
 def _run_silent_server(quiet=False):
     import odoo #pylint:disable=redefined-outer-name
-    _load_config(['--no-xmlrpc'])
+    _load_config(['--no-xmlrpc', '--workers=0', '--max-cron-threads=0'])
     if not quiet:
         odoo.cli.server.report_configuration()
     odoo.service.server.start(preload=[], stop=True)

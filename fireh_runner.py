@@ -171,15 +171,15 @@ class Loader(object):
                 params.pop(0)
                 for param in params:
                     if len(param) == 1:
-                        args = getattr(arguments, param[0], [])
+                        args.extend(getattr(arguments, param[0], []))
                     elif param[0] in ('self', 'loader'):
-                        kwargs[param[0]] = self
+                        args.append(self)
                     else:
                         try:
                             default = param[2]
                         except IndexError:
                             default = None
-                        kwargs[param[0]] = getattr(arguments, param[0], default)
+                        args.append(getattr(arguments, param[0], default))
 
                 return function(self, *args, **kwargs)
 
