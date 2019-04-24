@@ -6,7 +6,7 @@ Website: http://alembic.zzzcomputing.com
 """
 import os
 
-def alembic(loader, *args, project=None, variant=None):
+def alembic(loader, project=None, variant=None, *args):
     """ Apply database migration.
     """
     loader.setup_virtualenv()

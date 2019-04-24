@@ -8,7 +8,7 @@ Website: http://ansible.com
 """
 import os
 
-def ansible(loader, *args, project=None, variant=None):
+def ansible(loader, project=None, variant=None, *args):
     """ Server provisioning.
     """
     loader.setup_virtualenv()
@@ -37,7 +37,7 @@ def ansible(loader, *args, project=None, variant=None):
     os.execvp(binargs[0], binargs)
 
 
-def ansible_doc(loader, *args, project=None, variant=None):
+def ansible_doc(loader, project=None, variant=None, *args):
     """ Ansible modules documentation.
     """
     loader.setup_virtualenv()
@@ -55,7 +55,7 @@ def ansible_doc(loader, *args, project=None, variant=None):
     os.execvp(binargs[0], binargs)
 
 
-def ansible_playbook(loader, *args, project=None, variant=None):
+def ansible_playbook(loader, project=None, variant=None, *args):
     """ Server provisioning.
     """
     loader.setup_virtualenv()

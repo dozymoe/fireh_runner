@@ -4,7 +4,7 @@ Website: http://waf.io
 """
 import os
 
-def waf(loader, *args, variant=None):
+def waf(loader, variant=None, *args):
     """Build project.
 
     Checkout pybuildtool (shameless plug) for a python version of web project

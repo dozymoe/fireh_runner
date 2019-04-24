@@ -13,7 +13,7 @@ import os
 SHELL_TIMEOUT = None
 
 
-def trytond(loader, *args, project=None, variant=None):
+def trytond(loader, project=None, variant=None, *args):
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -57,7 +57,7 @@ def trytond(loader, *args, project=None, variant=None):
     os.execvp(binargs[0], binargs)
 
 
-def trytond_admin(loader, *args, project=None, variant=None):
+def trytond_admin(loader, project=None, variant=None, *args):
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -93,7 +93,7 @@ def trytond_admin(loader, *args, project=None, variant=None):
     os.execvp(binargs[0], binargs)
 
 
-def trytond_cron(loader, *args, project=None, variant=None):
+def trytond_cron(loader, project=None, variant=None, *args):
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -130,7 +130,7 @@ def trytond_cron(loader, *args, project=None, variant=None):
     os.execvp(binargs[0], binargs)
 
 
-def trytond_worker(loader, *args, project=None, variant=None):
+def trytond_worker(loader, project=None, variant=None, *args):
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -167,7 +167,7 @@ def trytond_worker(loader, *args, project=None, variant=None):
     os.execvp(binargs[0], binargs)
 
 
-def tryton(loader, *args, project=None, variant=None):
+def tryton(loader, project=None, variant=None, *args):
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)

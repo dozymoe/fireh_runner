@@ -11,7 +11,7 @@ def uwsgi(loader, *args):
     os.execvp(binargs[0], binargs)
 
 
-def uwsgi_run(loader, *args, project=None, variant=None):
+def uwsgi_run(loader, project=None, variant=None, *args):
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)

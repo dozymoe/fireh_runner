@@ -33,7 +33,7 @@ def pip(loader, *args):
     os.execvp(binargs[0], binargs)
 
 
-def pip_install(loader, *args, save=None):
+def pip_install(loader, save=None, *args):
     """Install python packages."""
     venv_type = loader.setup_virtualenv()
     python_bin = loader.get_python_bin()
@@ -48,7 +48,7 @@ def pip_install(loader, *args, save=None):
     os.execvp(binargs[0], binargs)
 
 
-def pip_uninstall(loader, *args, save=None):
+def pip_uninstall(loader, save=None, *args):
     """Uninstall python packages."""
     loader.setup_virtualenv()
     python_bin = loader.get_python_bin()

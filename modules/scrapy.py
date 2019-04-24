@@ -5,7 +5,7 @@ from websites. In a fast, simple, yet extensible way.
 """
 import os
 
-def scrapy(loader, *args, project=None, variant=None):
+def scrapy(loader, project=None, variant=None, *args):
     """Extract data from websites."""
     loader.setup_virtualenv()
 
