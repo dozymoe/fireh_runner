@@ -42,7 +42,7 @@ def flatten_dict(prefix, data):
             yield (new_prefix, item)
 
 
-class Loader(object):
+class Loader():
 
     config = None
 
@@ -319,7 +319,7 @@ class Loader(object):
 
         if sys.platform == 'msys':
             return os.path.join('/', fixed_path.replace(':', ''))
-        elif sys.platform == 'cygwin':
+        if sys.platform == 'cygwin':
             return os.path.join('/cygdrive',
                     fixed_path.replace(':', ''))
 

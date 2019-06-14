@@ -2,7 +2,7 @@
 """
 import os
 
-def python(loader, project=None, variant=None, *args):
+def python(loader, project=None, variant=None, *args): #pylint:disable=keyword-arg-before-vararg
     loader.setup_virtualenv()
     python_bin = loader.get_python_bin()
 

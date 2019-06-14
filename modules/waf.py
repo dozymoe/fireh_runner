@@ -4,7 +4,7 @@ Website: http://waf.io
 """
 import os
 
-def waf(loader, variant=None, *args):
+def waf(loader, variant=None, *args): #pylint:disable=keyword-arg-before-vararg
     """Build project.
 
     Checkout pybuildtool (shameless plug) for a python version of web project

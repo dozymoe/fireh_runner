@@ -13,7 +13,7 @@ import os
 SHELL_TIMEOUT = None
 
 
-def trytond(loader, project=None, variant=None, *args):
+def trytond(loader, project=None, variant=None, *args): #pylint:disable=keyword-arg-before-vararg
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -57,7 +57,7 @@ def trytond(loader, project=None, variant=None, *args):
     os.execvp(binargs[0], binargs)
 
 
-def trytond_admin(loader, project=None, variant=None, *args):
+def trytond_admin(loader, project=None, variant=None, *args): #pylint:disable=keyword-arg-before-vararg
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -93,7 +93,7 @@ def trytond_admin(loader, project=None, variant=None, *args):
     os.execvp(binargs[0], binargs)
 
 
-def trytond_cron(loader, project=None, variant=None, *args):
+def trytond_cron(loader, project=None, variant=None, *args): #pylint:disable=keyword-arg-before-vararg
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -130,7 +130,7 @@ def trytond_cron(loader, project=None, variant=None, *args):
     os.execvp(binargs[0], binargs)
 
 
-def trytond_worker(loader, project=None, variant=None, *args):
+def trytond_worker(loader, project=None, variant=None, *args): #pylint:disable=keyword-arg-before-vararg
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -167,7 +167,7 @@ def trytond_worker(loader, project=None, variant=None, *args):
     os.execvp(binargs[0], binargs)
 
 
-def tryton(loader, project=None, variant=None, *args):
+def tryton(loader, project=None, variant=None, *args): #pylint:disable=keyword-arg-before-vararg
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)

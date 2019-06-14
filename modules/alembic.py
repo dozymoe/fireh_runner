@@ -6,7 +6,7 @@ Website: http://alembic.zzzcomputing.com
 """
 import os
 
-def alembic(loader, project=None, variant=None, *args):
+def alembic(loader, project=None, variant=None, *args): #pylint:disable=keyword-arg-before-vararg
     """ Apply database migration.
     """
     loader.setup_virtualenv()

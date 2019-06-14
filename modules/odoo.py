@@ -21,7 +21,7 @@ logging.basicConfig(level=logging.INFO)
 _logger = logging.getLogger(__name__)
 
 
-def odoo(loader, project=None, variant=None, *args):
+def odoo(loader, project=None, variant=None, *args): #pylint:disable=keyword-arg-before-vararg
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -50,7 +50,7 @@ def odoo(loader, project=None, variant=None, *args):
     os.execvp(binargs[0], binargs)
 
 
-def odoo_cleardb(loader, project=None, variant=None, *args):
+def odoo_cleardb(loader, project=None, variant=None, *args): #pylint:disable=keyword-arg-before-vararg
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -79,7 +79,7 @@ def odoo_cleardb(loader, project=None, variant=None, *args):
     os.execvp(binargs[0], binargs)
 
 
-def odoo_shell(loader, project=None, variant=None, *args):
+def odoo_shell(loader, project=None, variant=None, *args): #pylint:disable=keyword-arg-before-vararg
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -111,7 +111,7 @@ def odoo_shell(loader, project=None, variant=None, *args):
     os.execvp(binargs[0], binargs)
 
 
-def odoo_install(loader, project=None, variant=None, *args):
+def odoo_install(loader, project=None, variant=None, *args): #pylint:disable=keyword-arg-before-vararg
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -140,7 +140,7 @@ def odoo_install(loader, project=None, variant=None, *args):
     os.execvp(binargs[0], binargs)
 
 
-def odoo_uninstall(loader, project=None, variant=None, *args):
+def odoo_uninstall(loader, project=None, variant=None, *args): #pylint:disable=keyword-arg-before-vararg
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -169,7 +169,7 @@ def odoo_uninstall(loader, project=None, variant=None, *args):
     os.execvp(binargs[0], binargs)
 
 
-def odoo_upgrade(loader, project=None, variant=None, *args):
+def odoo_upgrade(loader, project=None, variant=None, *args): #pylint:disable=keyword-arg-before-vararg
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -211,7 +211,7 @@ def odoo_upgrade(loader, project=None, variant=None, *args):
     exit(0)
 
 
-def odoo_script(loader, project=None, variant=None, quiet='y', with_server='y',
+def odoo_script(loader, project=None, variant=None, quiet='y', with_server='y', #pylint:disable=keyword-arg-before-vararg
         *args):
     """
     Runs python scripts and provides odoo shell environment.
@@ -262,7 +262,7 @@ def odoo_script(loader, project=None, variant=None, quiet='y', with_server='y',
     os.execvp(binargs[0], binargs)
 
 
-def odoo_setup(loader, project=None, variant=None, *args):
+def odoo_setup(loader, project=None, variant=None, *args): #pylint:disable=keyword-arg-before-vararg
     venv_type = loader.setup_virtualenv()
     python_bin = loader.get_python_bin()
 
@@ -283,7 +283,7 @@ def odoo_setup(loader, project=None, variant=None, *args):
     os.execvp(binargs[0], binargs)
 
 
-def odoo_list_installed(loader, project=None, variant=None, *args):
+def odoo_list_installed(loader, project=None, variant=None, *args): #pylint:disable=keyword-arg-before-vararg
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)

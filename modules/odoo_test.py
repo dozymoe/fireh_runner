@@ -21,7 +21,7 @@ logging.basicConfig(level=logging.INFO)
 _logger = logging.getLogger(__name__)
 
 
-def odoo_test(loader, project=None, variant='testing', *args):
+def odoo_test(loader, project=None, variant='testing', *args): #pylint:disable=keyword-arg-before-vararg
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -50,7 +50,7 @@ def odoo_test(loader, project=None, variant='testing', *args):
     os.execvp(binargs[0], binargs)
 
 
-def odoo_test_cleardb(loader, project=None, variant='testing', *args):
+def odoo_test_cleardb(loader, project=None, variant='testing', *args): #pylint:disable=keyword-arg-before-vararg
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -79,7 +79,7 @@ def odoo_test_cleardb(loader, project=None, variant='testing', *args):
     os.execvp(binargs[0], binargs)
 
 
-def odoo_test_shell(loader, project=None, variant='testing', *args):
+def odoo_test_shell(loader, project=None, variant='testing', *args): #pylint:disable=keyword-arg-before-vararg
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -111,7 +111,7 @@ def odoo_test_shell(loader, project=None, variant='testing', *args):
     os.execvp(binargs[0], binargs)
 
 
-def odoo_test_install(loader, project=None, variant='testing', *args):
+def odoo_test_install(loader, project=None, variant='testing', *args): #pylint:disable=keyword-arg-before-vararg
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -140,7 +140,7 @@ def odoo_test_install(loader, project=None, variant='testing', *args):
     os.execvp(binargs[0], binargs)
 
 
-def odoo_test_uninstall(loader, project=None, variant='testing', *args):
+def odoo_test_uninstall(loader, project=None, variant='testing', *args): #pylint:disable=keyword-arg-before-vararg
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -169,7 +169,7 @@ def odoo_test_uninstall(loader, project=None, variant='testing', *args):
     os.execvp(binargs[0], binargs)
 
 
-def odoo_test_upgrade(loader, project=None, variant='testing', *args):
+def odoo_test_upgrade(loader, project=None, variant='testing', *args): #pylint:disable=keyword-arg-before-vararg
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
@@ -211,7 +211,7 @@ def odoo_test_upgrade(loader, project=None, variant='testing', *args):
     exit(0)
 
 
-def odoo_test_list_installed(loader, project=None, variant='testing', *args):
+def odoo_test_list_installed(loader, project=None, variant='testing', *args): #pylint:disable=keyword-arg-before-vararg
     loader.setup_virtualenv()
 
     project, variant = loader.setup_project_env(project, variant)
