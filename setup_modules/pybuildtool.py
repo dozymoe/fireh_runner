@@ -7,9 +7,11 @@ if sys.version_info[0] < 3:
     class urllib:
         parse = __import__("urllib")
         request = __import__("urllib2")
+    from urllib2 import URLError
 else:
     import urllib.request
     import urllib.parse
+    from urllib.error import URLError
 
 
 def setup(loader, variant):
@@ -30,8 +32,14 @@ def setup(loader, variant):
 
     if not os.path.exists(waf_ver_path):
         print('Downloading waf...')
-        resp = urllib.request.urlopen('http://waf.io/waf-' +\
-                loader.config['waf_version'], timeout=30).read()
+        try:
+            resp = urllib.request.urlopen('https://waf.io/waf-' +\
+                    loader.config['waf_version'], timeout=30).read()
+        except URLError:
+            # mirror
+            resp = urllib.request.urlopen(
+                    'https://www.freehackers.org/~tnagy/release/waf-' +\
+                    loader.config['waf_version'], timeout=30).read()
 
         with open(waf_ver_path, 'wb') as f:
             f.write(resp)
