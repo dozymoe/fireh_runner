@@ -18,7 +18,7 @@ def bin(loader, project=None, variant=None, *args): #pylint:disable=redefined-bu
     work_dir = loader.expand_path(work_dir)
 
     venv_dir = loader.get_virtualenv_dir()
-    binargs = [os.path.join(venv_dir, 'bin', args[0])] + args[1:]
+    binargs = [os.path.join(venv_dir, 'bin', args[0])] + list(args[1:])
     os.chdir(work_dir)
     os.execvp(binargs[0], binargs)
 
