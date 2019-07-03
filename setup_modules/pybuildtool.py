@@ -7,7 +7,7 @@ if sys.version_info[0] < 3:
     class urllib:
         parse = __import__("urllib")
         request = __import__("urllib2")
-    from urllib2 import URLError
+    from urllib2 import URLError #pylint:disable=import-error
 else:
     import urllib.request
     import urllib.parse
