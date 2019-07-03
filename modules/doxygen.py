@@ -6,15 +6,13 @@ Website: http://www.doxygen.org
 """
 import os
 
-def doxygen(loader, variant=None, *args): #pylint:disable=keyword-arg-before-vararg
-    if variant is None:
-        variant = os.environ.get('PROJECT_VARIANT',
-                loader.config.get('default_variant'))
+def doxygen(loader, project=None, variant=None, *args): #pylint:disable=keyword-arg-before-vararg
+    loader.setup_project_env(project, variant)
+    loader.setup_virtualenv()
+    loader.setup_shell_env()
+    config = loader.get_project_config()
 
-    config = loader.config.get('configuration', {})
-    config = config.get(variant, {})
-
-    binargs = ['doxygen', config['doxygen']['config_file']] + list(args)
+    binargs = ['doxygen', config['doxygen.config']] + list(args)
     os.execvp(binargs[0], binargs)
 
 

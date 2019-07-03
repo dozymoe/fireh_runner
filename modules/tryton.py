@@ -14,13 +14,11 @@ SHELL_TIMEOUT = None
 
 
 def trytond(loader, project=None, variant=None, *args): #pylint:disable=keyword-arg-before-vararg
-    loader.setup_virtualenv()
-
     project, variant = loader.setup_project_env(project, variant)
-
-    config = loader.config.get('configuration', {})
-    config = config.get(variant, {})
-    config = config.get(project, {})
+    loader.setup_virtualenv()
+    loader.setup_shell_env()
+    config = loader.get_project_config()
+    python_bin = loader.get_python_bin()
 
     database_name = config.get('tryton.database.name', project)
     config_file = config.get('tryton.config_file')
@@ -33,14 +31,11 @@ def trytond(loader, project=None, variant=None, *args): #pylint:disable=keyword-
         logging_config_file = os.path.join(loader.config['work_dir'],
                 logging_config_file)
 
-    loader.setup_shell_env(config.get('shell_env', {}))
-
     work_dir = config.get('work_dir', project)
     work_dir = loader.expand_path(work_dir)
 
     bindir = config.get('trytond.bin_dir')
     if bindir:
-        python_bin = loader.get_python_bin()
         binargs = [python_bin, os.path.join(loader.config['work_dir'], bindir,
                 'trytond')]
     else:
@@ -58,27 +53,22 @@ def trytond(loader, project=None, variant=None, *args): #pylint:disable=keyword-
 
 
 def trytond_admin(loader, project=None, variant=None, *args): #pylint:disable=keyword-arg-before-vararg
-    loader.setup_virtualenv()
-
     project, variant = loader.setup_project_env(project, variant)
-
-    config = loader.config.get('configuration', {})
-    config = config.get(variant, {})
-    config = config.get(project, {})
+    loader.setup_virtualenv()
+    loader.setup_shell_env()
+    config = loader.get_project_config()
+    python_bin = loader.get_python_bin()
 
     database_name = config.get('tryton.database.name', project)
     config_file = config.get('tryton.config_file')
     config_file = os.path.join(loader.config['work_dir'],
             config_file)
 
-    loader.setup_shell_env(config.get('shell_env', {}))
-
     work_dir = config.get('work_dir', project)
     work_dir = loader.expand_path(work_dir)
 
     bindir = config.get('trytond.bin_dir')
     if bindir:
-        python_bin = loader.get_python_bin()
         binargs = [python_bin, os.path.join(loader.config['work_dir'], bindir,
                 'trytond-admin')]
     else:
@@ -94,13 +84,11 @@ def trytond_admin(loader, project=None, variant=None, *args): #pylint:disable=ke
 
 
 def trytond_cron(loader, project=None, variant=None, *args): #pylint:disable=keyword-arg-before-vararg
-    loader.setup_virtualenv()
-
     project, variant = loader.setup_project_env(project, variant)
-
-    config = loader.config.get('configuration', {})
-    config = config.get(variant, {})
-    config = config.get(project, {})
+    loader.setup_virtualenv()
+    loader.setup_shell_env()
+    config = loader.get_project_config()
+    python_bin = loader.get_python_bin()
 
     database_name = config.get('tryton.database.name', project)
     config_file = config.get('tryton.config_file')
@@ -108,14 +96,11 @@ def trytond_cron(loader, project=None, variant=None, *args): #pylint:disable=key
         config_file = os.path.join(loader.config['work_dir'],
                 config_file)
 
-    loader.setup_shell_env(config.get('shell_env', {}))
-
     work_dir = config.get('work_dir', project)
     work_dir = loader.expand_path(work_dir)
 
     bindir = config.get('trytond.bin_dir')
     if bindir:
-        python_bin = loader.get_python_bin()
         binargs = [python_bin, os.path.join(loader.config['work_dir'], bindir,
                 'trytond-cron')]
     else:
@@ -131,13 +116,11 @@ def trytond_cron(loader, project=None, variant=None, *args): #pylint:disable=key
 
 
 def trytond_worker(loader, project=None, variant=None, *args): #pylint:disable=keyword-arg-before-vararg
-    loader.setup_virtualenv()
-
     project, variant = loader.setup_project_env(project, variant)
-
-    config = loader.config.get('configuration', {})
-    config = config.get(variant, {})
-    config = config.get(project, {})
+    loader.setup_virtualenv()
+    loader.setup_shell_env()
+    config = loader.get_project_config()
+    python_bin = loader.get_python_bin()
 
     database_name = config.get('tryton.database.name', project)
     config_file = config.get('tryton.config_file')
@@ -145,14 +128,11 @@ def trytond_worker(loader, project=None, variant=None, *args): #pylint:disable=k
         config_file = os.path.join(loader.config['work_dir'],
                 config_file)
 
-    loader.setup_shell_env(config.get('shell_env', {}))
-
     work_dir = config.get('work_dir', project)
     work_dir = loader.expand_path(work_dir)
 
     bindir = config.get('trytond.bin_dir')
     if bindir:
-        python_bin = loader.get_python_bin()
         binargs = [python_bin, os.path.join(loader.config['work_dir'], bindir,
                 'trytond-worker')]
     else:
@@ -168,13 +148,11 @@ def trytond_worker(loader, project=None, variant=None, *args): #pylint:disable=k
 
 
 def tryton(loader, project=None, variant=None, *args): #pylint:disable=keyword-arg-before-vararg
-    loader.setup_virtualenv()
-
     project, variant = loader.setup_project_env(project, variant)
-
-    config = loader.config.get('configuration', {})
-    config = config.get(variant, {})
-    config = config.get(project, {})
+    loader.setup_virtualenv()
+    loader.setup_shell_env()
+    config = loader.get_project_config()
+    python_bin = loader.get_python_bin()
 
     database_name = config.get('tryton.database.name', project)
     config_file = config.get('tryton.config_file')
@@ -182,14 +160,11 @@ def tryton(loader, project=None, variant=None, *args): #pylint:disable=keyword-a
         config_file = os.path.join(loader.config['work_dir'],
                 config_file)
 
-    loader.setup_shell_env(config.get('shell_env', {}))
-
     work_dir = config.get('work_dir', project)
     work_dir = loader.expand_path(work_dir)
 
     bindir = config.get('tryton.bin_dir')
     if bindir:
-        python_bin = loader.get_python_bin()
         binargs = [python_bin, os.path.join(loader.config['work_dir'], bindir,
                 'tryton')]
     else:

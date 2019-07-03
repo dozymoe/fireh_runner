@@ -12,15 +12,10 @@ def uwsgi(loader, *args):
 
 
 def uwsgi_run(loader, project=None, variant=None, *args): #pylint:disable=keyword-arg-before-vararg
-    loader.setup_virtualenv()
-
     project, variant = loader.setup_project_env(project, variant)
-
-    config = loader.config.get('configuration', {})
-    config = config.get(variant, {})
-    config = config.get(project, {})
-
-    loader.setup_shell_env(config.get('shell_env', {}))
+    loader.setup_virtualenv()
+    loader.setup_shell_env()
+    config = loader.get_project_config()
 
     socket_path = config.get('socket_path', '/tmp/%s-%s-%s.sock' %\
             (loader.config['package_name'], project, variant))

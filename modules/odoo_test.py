@@ -22,24 +22,19 @@ _logger = logging.getLogger(__name__)
 
 
 def odoo_test(loader, project=None, variant='testing', *args): #pylint:disable=keyword-arg-before-vararg
-    loader.setup_virtualenv()
-
     project, variant = loader.setup_project_env(project, variant)
-
-    config = loader.config.get('configuration', {})
-    config = config.get(variant, {})
-    config = config.get(project, {})
+    loader.setup_virtualenv()
+    loader.setup_shell_env()
+    config = loader.get_project_config()
+    python_bin = loader.get_python_bin()
 
     config_file = config.get('config_file')
     config_file = os.path.join(loader.config['work_dir'],
             config_file)
 
-    loader.setup_shell_env(config.get('shell_env', {}))
-
     work_dir = config.get('work_dir', project)
     work_dir = loader.expand_path(work_dir)
 
-    python_bin = loader.get_python_bin()
     # bugfix, command like `odoo.py shell`, the word 'shell'  must be mentioned
     # before we define --config, weird
     binargs = [python_bin, __file__, 'server'] + list(args)
@@ -51,24 +46,19 @@ def odoo_test(loader, project=None, variant='testing', *args): #pylint:disable=k
 
 
 def odoo_test_cleardb(loader, project=None, variant='testing', *args): #pylint:disable=keyword-arg-before-vararg
-    loader.setup_virtualenv()
-
     project, variant = loader.setup_project_env(project, variant)
-
-    config = loader.config.get('configuration', {})
-    config = config.get(variant, {})
-    config = config.get(project, {})
+    loader.setup_virtualenv()
+    loader.setup_shell_env()
+    config = loader.get_project_config()
+    python_bin = loader.get_python_bin()
 
     config_file = config.get('config_file')
     config_file = os.path.join(loader.config['work_dir'],
             config_file)
 
-    loader.setup_shell_env(config.get('shell_env', {}))
-
     work_dir = config.get('work_dir', project)
     work_dir = loader.expand_path(work_dir)
 
-    python_bin = loader.get_python_bin()
     # bugfix, command like `odoo.py shell`, the word 'shell'  must be mentioned
     # before we define --config, weird
     binargs = [python_bin, __file__, 'cleardb'] + list(args)
@@ -80,13 +70,11 @@ def odoo_test_cleardb(loader, project=None, variant='testing', *args): #pylint:d
 
 
 def odoo_test_shell(loader, project=None, variant='testing', *args): #pylint:disable=keyword-arg-before-vararg
-    loader.setup_virtualenv()
-
     project, variant = loader.setup_project_env(project, variant)
-
-    config = loader.config.get('configuration', {})
-    config = config.get(variant, {})
-    config = config.get(project, {})
+    loader.setup_virtualenv()
+    loader.setup_shell_env()
+    config = loader.get_project_config()
+    python_bin = loader.get_python_bin()
 
     config_file = config.get('config_file')
     config_file = os.path.join(loader.config['work_dir'],
@@ -97,7 +85,6 @@ def odoo_test_shell(loader, project=None, variant='testing', *args): #pylint:dis
     work_dir = config.get('work_dir', project)
     work_dir = loader.expand_path(work_dir)
 
-    python_bin = loader.get_python_bin()
     # bugfix, command like `odoo.py shell`, the word 'shell'  must be mentioned
     # before we define --config, weird
     binargs = [python_bin, __file__, 'server']
@@ -112,24 +99,19 @@ def odoo_test_shell(loader, project=None, variant='testing', *args): #pylint:dis
 
 
 def odoo_test_install(loader, project=None, variant='testing', *args): #pylint:disable=keyword-arg-before-vararg
-    loader.setup_virtualenv()
-
     project, variant = loader.setup_project_env(project, variant)
-
-    config = loader.config.get('configuration', {})
-    config = config.get(variant, {})
-    config = config.get(project, {})
+    loader.setup_virtualenv()
+    loader.setup_shell_env()
+    config = loader.get_project_config()
+    python_bin = loader.get_python_bin()
 
     config_file = config.get('config_file')
     config_file = os.path.join(loader.config['work_dir'],
             config_file)
 
-    loader.setup_shell_env(config.get('shell_env', {}))
-
     work_dir = config.get('work_dir', project)
     work_dir = loader.expand_path(work_dir)
 
-    python_bin = loader.get_python_bin()
     # bugfix, command like `odoo.py shell`, the word 'shell'  must be mentioned
     # before we define --config, weird
     binargs = [python_bin, __file__, 'install'] + list(args)
@@ -141,24 +123,19 @@ def odoo_test_install(loader, project=None, variant='testing', *args): #pylint:d
 
 
 def odoo_test_uninstall(loader, project=None, variant='testing', *args): #pylint:disable=keyword-arg-before-vararg
-    loader.setup_virtualenv()
-
     project, variant = loader.setup_project_env(project, variant)
-
-    config = loader.config.get('configuration', {})
-    config = config.get(variant, {})
-    config = config.get(project, {})
+    loader.setup_virtualenv()
+    loader.setup_shell_env()
+    config = loader.get_project_config()
+    python_bin = loader.get_python_bin()
 
     config_file = config.get('config_file')
     config_file = os.path.join(loader.config['work_dir'],
             config_file)
 
-    loader.setup_shell_env(config.get('shell_env', {}))
-
     work_dir = config.get('work_dir', project)
     work_dir = loader.expand_path(work_dir)
 
-    python_bin = loader.get_python_bin()
     # bugfix, command like `odoo.py shell`, the word 'shell'  must be mentioned
     # before we define --config, weird
     binargs = [python_bin, __file__, 'uninstall'] + list(args)
@@ -170,24 +147,19 @@ def odoo_test_uninstall(loader, project=None, variant='testing', *args): #pylint
 
 
 def odoo_test_upgrade(loader, project=None, variant='testing', *args): #pylint:disable=keyword-arg-before-vararg
-    loader.setup_virtualenv()
-
     project, variant = loader.setup_project_env(project, variant)
-
-    config = loader.config.get('configuration', {})
-    config = config.get(variant, {})
-    config = config.get(project, {})
+    loader.setup_virtualenv()
+    loader.setup_shell_env()
+    config = loader.get_project_config()
+    python_bin = loader.get_python_bin()
 
     config_file = config.get('config_file')
     config_file = os.path.join(loader.config['work_dir'],
             config_file)
 
-    loader.setup_shell_env(config.get('shell_env', {}))
-
     work_dir = config.get('work_dir', project)
     work_dir = loader.expand_path(work_dir)
 
-    python_bin = loader.get_python_bin()
     # bugfix, command like `odoo.py shell`, the word 'shell'  must be mentioned
     # before we define --config, weird
     binargs = [python_bin, __file__, 'server']
@@ -212,24 +184,19 @@ def odoo_test_upgrade(loader, project=None, variant='testing', *args): #pylint:d
 
 
 def odoo_test_list_installed(loader, project=None, variant='testing', *args): #pylint:disable=keyword-arg-before-vararg
-    loader.setup_virtualenv()
-
     project, variant = loader.setup_project_env(project, variant)
-
-    config = loader.config.get('configuration', {})
-    config = config.get(variant, {})
-    config = config.get(project, {})
+    loader.setup_virtualenv()
+    loader.setup_shell_env()
+    config = loader.get_project_config()
+    python_bin = loader.get_python_bin()
 
     config_file = config.get('config_file')
     config_file = os.path.join(loader.config['work_dir'],
             config_file)
 
-    loader.setup_shell_env(config.get('shell_env', {}))
-
     work_dir = config.get('work_dir', project)
     work_dir = loader.expand_path(work_dir)
 
-    python_bin = loader.get_python_bin()
     # bugfix, command like `odoo.py shell`, the word 'shell'  must be mentioned
     # before we define --config, weird
     binargs = [python_bin, __file__, 'list-installed'] + list(args)

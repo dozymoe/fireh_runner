@@ -22,24 +22,19 @@ _logger = logging.getLogger(__name__)
 
 
 def odoo(loader, project=None, variant=None, *args): #pylint:disable=keyword-arg-before-vararg
-    loader.setup_virtualenv()
-
     project, variant = loader.setup_project_env(project, variant)
-
-    config = loader.config.get('configuration', {})
-    config = config.get(variant, {})
-    config = config.get(project, {})
+    loader.setup_virtualenv()
+    loader.setup_shell_env()
+    config = loader.get_project_config()
+    python_bin = loader.get_python_bin()
 
     config_file = config.get('config_file')
     config_file = os.path.join(loader.config['work_dir'],
             config_file)
 
-    loader.setup_shell_env(config.get('shell_env', {}))
-
     work_dir = config.get('work_dir', project)
     work_dir = loader.expand_path(work_dir)
 
-    python_bin = loader.get_python_bin()
     # bugfix, command like `odoo.py shell`, the word 'shell'  must be mentioned
     # before we define --config, weird
     binargs = [python_bin, __file__, 'server'] + list(args)
@@ -51,24 +46,19 @@ def odoo(loader, project=None, variant=None, *args): #pylint:disable=keyword-arg
 
 
 def odoo_cleardb(loader, project=None, variant=None, *args): #pylint:disable=keyword-arg-before-vararg
-    loader.setup_virtualenv()
-
     project, variant = loader.setup_project_env(project, variant)
-
-    config = loader.config.get('configuration', {})
-    config = config.get(variant, {})
-    config = config.get(project, {})
+    loader.setup_virtualenv()
+    loader.setup_shell_env()
+    config = loader.get_project_config()
+    python_bin = loader.get_python_bin()
 
     config_file = config.get('config_file')
     config_file = os.path.join(loader.config['work_dir'],
             config_file)
 
-    loader.setup_shell_env(config.get('shell_env', {}))
-
     work_dir = config.get('work_dir', project)
     work_dir = loader.expand_path(work_dir)
 
-    python_bin = loader.get_python_bin()
     # bugfix, command like `odoo.py shell`, the word 'shell'  must be mentioned
     # before we define --config, weird
     binargs = [python_bin, __file__, 'cleardb'] + list(args)
@@ -80,24 +70,19 @@ def odoo_cleardb(loader, project=None, variant=None, *args): #pylint:disable=key
 
 
 def odoo_shell(loader, project=None, variant=None, *args): #pylint:disable=keyword-arg-before-vararg
-    loader.setup_virtualenv()
-
     project, variant = loader.setup_project_env(project, variant)
-
-    config = loader.config.get('configuration', {})
-    config = config.get(variant, {})
-    config = config.get(project, {})
+    loader.setup_virtualenv()
+    loader.setup_shell_env()
+    config = loader.get_project_config()
+    python_bin = loader.get_python_bin()
 
     config_file = config.get('config_file')
     config_file = os.path.join(loader.config['work_dir'],
             config_file)
 
-    loader.setup_shell_env(config.get('shell_env', {}))
-
     work_dir = config.get('work_dir', project)
     work_dir = loader.expand_path(work_dir)
 
-    python_bin = loader.get_python_bin()
     # bugfix, command like `odoo.py shell`, the word 'shell'  must be mentioned
     # before we define --config, weird
     binargs = [python_bin, __file__, 'server']
@@ -112,24 +97,19 @@ def odoo_shell(loader, project=None, variant=None, *args): #pylint:disable=keywo
 
 
 def odoo_install(loader, project=None, variant=None, *args): #pylint:disable=keyword-arg-before-vararg
-    loader.setup_virtualenv()
-
     project, variant = loader.setup_project_env(project, variant)
-
-    config = loader.config.get('configuration', {})
-    config = config.get(variant, {})
-    config = config.get(project, {})
+    loader.setup_virtualenv()
+    loader.setup_shell_env()
+    config = loader.get_project_config()
+    python_bin = loader.get_python_bin()
 
     config_file = config.get('config_file')
     config_file = os.path.join(loader.config['work_dir'],
             config_file)
 
-    loader.setup_shell_env(config.get('shell_env', {}))
-
     work_dir = config.get('work_dir', project)
     work_dir = loader.expand_path(work_dir)
 
-    python_bin = loader.get_python_bin()
     # bugfix, command like `odoo.py shell`, the word 'shell'  must be mentioned
     # before we define --config, weird
     binargs = [python_bin, __file__, 'install'] + list(args)
@@ -141,24 +121,19 @@ def odoo_install(loader, project=None, variant=None, *args): #pylint:disable=key
 
 
 def odoo_uninstall(loader, project=None, variant=None, *args): #pylint:disable=keyword-arg-before-vararg
-    loader.setup_virtualenv()
-
     project, variant = loader.setup_project_env(project, variant)
-
-    config = loader.config.get('configuration', {})
-    config = config.get(variant, {})
-    config = config.get(project, {})
+    loader.setup_virtualenv()
+    loader.setup_shell_env()
+    config = loader.get_project_config()
+    python_bin = loader.get_python_bin()
 
     config_file = config.get('config_file')
     config_file = os.path.join(loader.config['work_dir'],
             config_file)
 
-    loader.setup_shell_env(config.get('shell_env', {}))
-
     work_dir = config.get('work_dir', project)
     work_dir = loader.expand_path(work_dir)
 
-    python_bin = loader.get_python_bin()
     # bugfix, command like `odoo.py shell`, the word 'shell'  must be mentioned
     # before we define --config, weird
     binargs = [python_bin, __file__, 'uninstall'] + list(args)
@@ -170,24 +145,19 @@ def odoo_uninstall(loader, project=None, variant=None, *args): #pylint:disable=k
 
 
 def odoo_upgrade(loader, project=None, variant=None, *args): #pylint:disable=keyword-arg-before-vararg
-    loader.setup_virtualenv()
-
     project, variant = loader.setup_project_env(project, variant)
-
-    config = loader.config.get('configuration', {})
-    config = config.get(variant, {})
-    config = config.get(project, {})
+    loader.setup_virtualenv()
+    loader.setup_shell_env()
+    config = loader.get_project_config()
+    python_bin = loader.get_python_bin()
 
     config_file = config.get('config_file')
     config_file = os.path.join(loader.config['work_dir'],
             config_file)
 
-    loader.setup_shell_env(config.get('shell_env', {}))
-
     work_dir = config.get('work_dir', project)
     work_dir = loader.expand_path(work_dir)
 
-    python_bin = loader.get_python_bin()
     # bugfix, command like `odoo.py shell`, the word 'shell'  must be mentioned
     # before we define --config, weird
     binargs = [python_bin, __file__, 'server']
@@ -232,24 +202,19 @@ def odoo_script(loader, project=None, variant=None, quiet='y', with_server='y', 
     When `with_server` is 'n', do not call `execute()`, call `simple_execute()`
     without arguments.
     """
-    loader.setup_virtualenv()
-
     project, variant = loader.setup_project_env(project, variant)
-
-    config = loader.config.get('configuration', {})
-    config = config.get(variant, {})
-    config = config.get(project, {})
+    loader.setup_virtualenv()
+    loader.setup_shell_env()
+    config = loader.get_project_config()
+    python_bin = loader.get_python_bin()
 
     config_file = config.get('config_file')
     config_file = os.path.join(loader.config['work_dir'],
             config_file)
 
-    loader.setup_shell_env(config.get('shell_env', {}))
-
     work_dir = config.get('work_dir', project)
     work_dir = loader.expand_path(work_dir)
 
-    python_bin = loader.get_python_bin()
     os.environ[SHELL_ENV_QUIET] = quiet
     os.environ[SHELL_ENV_WITH_SERVER] = with_server
     # bugfix, command like `odoo.py shell`, the word 'shell'  must be mentioned
@@ -263,14 +228,11 @@ def odoo_script(loader, project=None, variant=None, quiet='y', with_server='y', 
 
 
 def odoo_setup(loader, project=None, variant=None, *args): #pylint:disable=keyword-arg-before-vararg
-    venv_type = loader.setup_virtualenv()
-    python_bin = loader.get_python_bin()
-
     project, variant = loader.setup_project_env(project, variant)
-
-    config = loader.config.get('configuration', {})
-    config = config.get(variant, {})
-    config = config.get(project, {})
+    venv_type = loader.setup_virtualenv()
+    loader.setup_shell_env()
+    config = loader.get_project_config()
+    python_bin = loader.get_python_bin()
 
     odoo_dir = os.path.join(loader.config['work_dir'],
             config.get('odoo_dir', 'lib/odoo'))
@@ -284,24 +246,19 @@ def odoo_setup(loader, project=None, variant=None, *args): #pylint:disable=keywo
 
 
 def odoo_list_installed(loader, project=None, variant=None, *args): #pylint:disable=keyword-arg-before-vararg
-    loader.setup_virtualenv()
-
     project, variant = loader.setup_project_env(project, variant)
-
-    config = loader.config.get('configuration', {})
-    config = config.get(variant, {})
-    config = config.get(project, {})
+    loader.setup_virtualenv()
+    loader.setup_shell_env()
+    config = loader.get_project_config()
+    python_bin = loader.get_python_bin()
 
     config_file = config.get('config_file')
     config_file = os.path.join(loader.config['work_dir'],
             config_file)
 
-    loader.setup_shell_env(config.get('shell_env', {}))
-
     work_dir = config.get('work_dir', project)
     work_dir = loader.expand_path(work_dir)
 
-    python_bin = loader.get_python_bin()
     os.environ[SHELL_ENV_QUIET] = 'y'
     # bugfix, command like `odoo.py shell`, the word 'shell'  must be mentioned
     # before we define --config, weird

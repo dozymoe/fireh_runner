@@ -75,8 +75,19 @@ class Loader():
         return project, variant
 
 
-    def setup_shell_env(self, data):
-        for key, value in flatten_dict('', data):
+    def setup_shell_env(self, data=None):
+        project = os.environ['PROJECT_NAME']
+        variant = os.environ['PROJECT_VARIANT']
+
+        config = self.config.get('configuration', {})
+        config = config.get(variant, {})
+        env = {key: value for key, value in config.get('shell_env', {}).items()}
+        config = config.get(project, {})
+        for key, value in config.get('shell_env', {}).items():
+            env[key] = value
+        for key, value in (data or {}).items():
+            env[key] = value
+        for key, value in flatten_dict('', env):
             os.environ[key] = value
 
 
@@ -106,6 +117,15 @@ class Loader():
                 os.environ['PATH'] = os.pathsep.join(paths)
 
         return venv_type
+
+
+    def get_project_config(self):
+        project = os.environ['PROJECT_NAME']
+        variant = os.environ['PROJECT_VARIANT']
+
+        config = self.config.get('configuration', {})
+        config = config.get(variant, {})
+        return config.get(project, {})
 
 
     @staticmethod

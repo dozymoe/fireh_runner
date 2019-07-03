@@ -9,15 +9,10 @@ import os
 def alembic(loader, project=None, variant=None, *args): #pylint:disable=keyword-arg-before-vararg
     """ Apply database migration.
     """
-    loader.setup_virtualenv()
-
     project, variant = loader.setup_project_env(project, variant)
-
-    config = loader.config.get('configuration', {})
-    config = config.get(variant, {})
-    config = config.get(project, {})
-
-    loader.setup_shell_env(config.get('shell_env', {}))
+    loader.setup_virtualenv()
+    loader.setup_shell_env()
+    config = loader.get_project_config()
 
     work_dir = config.get('work_dir', project)
     work_dir = loader.expand_path(work_dir)
