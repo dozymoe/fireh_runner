@@ -18,7 +18,7 @@ def pip(loader, *args):
     for arg in args:
         if arg.startswith('-'):
             continue
-        elif arg == 'install':
+        if arg == 'install':
             if venv_type == 'python':
                 pip_args.append('--user')
             pip_args.extend(loader.config.get('pip_install_args', []))
