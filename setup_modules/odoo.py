@@ -2,15 +2,11 @@ import os
 from subprocess import check_call
 
 
-def setup(loader, variant):
-    venv_type = loader.setup_virtualenv()
-    python_bin = loader.get_python_bin()
-
+def setup(loader, variant=None):
     project, variant = loader.setup_project_env(None, variant)
-
-    config = loader.config.get('configuration', {})
-    config = config.get(variant, {})
-    config = config.get(project, {})
+    venv_type = loader.setup_virtualenv()
+    config = loader.get_project_config()
+    python_bin = loader.get_python_bin()
 
     odoo_dir = os.path.join(loader.config['work_dir'],
             config.get('odoo_dir', 'lib/odoo'))
@@ -19,5 +15,4 @@ def setup(loader, variant):
     if venv_type == 'python':
         binargs.append('--user')
 
-    os.chdir(odoo_dir)
-    check_call(binargs)
+    check_call(binargs, cwd=odoo_dir)
