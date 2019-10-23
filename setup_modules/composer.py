@@ -29,3 +29,5 @@ def setup(loader, variant=None):
     if os.path.exists(package_path):
         print("Setup composer packages")
         check_call([composer_bin, 'install'], cwd=work_dir)
+
+    return 0

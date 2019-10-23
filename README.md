@@ -94,9 +94,9 @@ Instructions:
 Create this run.bat:
 
     SET ROOT_DIR=%~dp0
-    SET PYTHON3.5_BIN=C:\Python35\python.exe
+    SET PYTHON3.7_BIN=C:\Python37\python.exe
 
-    %PYTHON3.5_BIN% %ROOT_DIR%\fireh_runner\fireh_runner.py %*
+    %PYTHON3.7_BIN% %ROOT_DIR%\lib\fireh_runner\fireh_runner.py %*
 
 You could then run `run.bat setup` or `run.bat pip install django`
 

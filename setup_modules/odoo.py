@@ -3,7 +3,7 @@ from subprocess import check_call
 
 
 def setup(loader, variant=None):
-    project, variant = loader.setup_project_env(None, variant)
+    _, variant = loader.setup_project_env(None, variant)
     venv_type = loader.setup_virtualenv()
     config = loader.get_project_config()
     python_bin = loader.get_python_bin()
