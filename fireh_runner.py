@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
-from collections import Mapping, Sequence
+from collections.abc import Mapping, Sequence
 import ctypes
 from distutils.spawn import find_executable # pylint:disable=no-name-in-module,import-error
 import errno
