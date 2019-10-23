@@ -1,6 +1,6 @@
 import os
 from shutil import copyfile
-from subprocess import check_call
+from subprocess import call, check_call
 import sys
 
 if sys.version_info[0] < 3:
@@ -71,5 +71,4 @@ def setup(loader, variant):
     if os.path.exists(wscript_path):
         loader.setup_virtualenv()
         check_call(loader.get_binargs('waf', 'configure'))
-        check_call(loader.get_binargs('waf', 'build', '-j1'))
-        check_call(loader.get_binargs('waf', 'build', '-j1'))
+        call(loader.get_binargs('waf'))
