@@ -1,5 +1,5 @@
 import os
-from shutil import copyfile
+from shutil import copyfile, rmtree
 from subprocess import call, check_call
 import sys
 
@@ -65,6 +65,10 @@ def setup(loader, variant):
     wscript_var_path = os.path.join(work_dir, 'wscript-' + variant)
     if os.path.exists(wscript_var_path):
         link_fn(wscript_var_path, wscript_path)
+
+    temp_build_path = os.path.join(work_dir, '.BUILD')
+    if os.path.exists(temp_build_path):
+        rmtree(temp_build_path)
 
     os.chdir(work_dir)
 
