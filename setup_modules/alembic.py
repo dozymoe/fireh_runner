@@ -2,20 +2,21 @@ import os
 from subprocess import check_call
 
 def setup(loader, variant=None):
-    _, variant = loader.setup_project_env(None, variant)
     loader.setup_virtualenv()
-
     config = loader.config.get('configuration', {})
     config = config.get(variant, {})
 
-    for project, prj_config in config.items():
+    for project in config:
+        project, variant = loader.setup_project_env(project, variant)
+        prj_config = loader.get_project_config()
+
         target = prj_config.get('alembic.setup_do_upgrade')
         if target is None:
             continue
         elif target is True:
             target = 'head'
 
-        loader.setup_shell_env(prj_config.get('shell_env', {}))
+        loader.setup_shell_env()
 
         work_dir = prj_config.get('work_dir', project)
         work_dir = loader.expand_path(work_dir)
@@ -41,5 +42,4 @@ def setup(loader, variant=None):
         binargs.append('upgrade')
         binargs.append(target)
 
-        os.chdir(work_dir)
-        check_call(binargs)
+        check_call(binargs, cwd=work_dir)
