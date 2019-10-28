@@ -84,7 +84,7 @@ class Loader():
 
         config = self.config.get('configuration', {})
         config = config.get(variant, {})
-        env = {key: value for key, value in config.get('shell_env', {}).items()}
+        env = config.get('shell_env', {})
         config = config.get(project, {})
         for key, value in config.get('shell_env', {}).items():
             env[key] = value
@@ -106,7 +106,7 @@ class Loader():
             try:
                 execfile(activate_file, dict(__file__=activate_file))
             except NameError:
-                import runpy
+                import runpy # pylint:disable=import-outside-toplevel
                 runpy.run_path(activate_file)
 
         else:
@@ -226,7 +226,7 @@ class Loader():
             return import_module(module)
         except ImportError:
             sys.stderr.write('Unable to load the module: %s.\n' % module)
-            exit(-1)
+            sys.exit(-1)
 
 
     def get_virtualenv_dir(self):
@@ -372,7 +372,7 @@ if __name__ == '__main__':
         sys.stderr.write('Unable read configuration file etc/runner.json:\n' +\
                 repr(e) + '\n')
 
-        exit(-1)
+        sys.exit(-1)
 
     runner_config['work_dir'] = root_dir
     os.environ['ROOT_DIR'] = root_dir
@@ -389,4 +389,4 @@ if __name__ == '__main__':
         loader.register(subparsers, mod)
 
     os.chdir(root_dir)
-    exit(loader.execute(argparse.parse_args()))
+    sys.exit(loader.execute(argparse.parse_args()))

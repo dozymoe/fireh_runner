@@ -179,8 +179,8 @@ def odoo_test_upgrade(loader, project=None, variant='testing', *args): #pylint:d
         _logger.info("Upgrading module '%s'.", mod)
         ret = subprocess.call(binargs + ['-u', mod])
         if ret:
-            exit(ret)
-    exit(0)
+            sys.exit(ret)
+    sys.exit(0)
 
 
 def odoo_test_list_installed(loader, project=None, variant='testing', *args): #pylint:disable=keyword-arg-before-vararg
@@ -213,12 +213,12 @@ commands = (odoo_test, odoo_test_cleardb, odoo_test_install,
 
 
 def _run_server():
-    import odoo
+    import odoo #pylint:disable=import-outside-toplevel
     odoo.cli.main()
 
 
 def _load_config(odoo_args):
-    import odoo
+    import odoo #pylint:disable=import-outside-toplevel
     for arg in sys.argv[1:]:
         if arg.startswith('-'):
             odoo_args.append(arg)
@@ -227,7 +227,7 @@ def _load_config(odoo_args):
 
 
 def _run_silent_server(quiet=False):
-    import odoo
+    import odoo #pylint:disable=import-outside-toplevel
     _load_config(['--no-xmlrpc', '--workers=0', '--max-cron-threads=0'])
     if not quiet:
         odoo.cli.server.report_configuration()
@@ -235,7 +235,7 @@ def _run_silent_server(quiet=False):
 
 
 def _execute(*callbacks):
-    import odoo
+    import odoo #pylint:disable=import-outside-toplevel
     local_vars = {
         'openerp': odoo,
         'odoo': odoo,
@@ -267,7 +267,7 @@ def _simple_execute(*callbacks):
 
 
 def _reset_database():
-    import psycopg2
+    import psycopg2 #pylint:disable=import-outside-toplevel
     config = _load_config([])
     dsn = 'postgresql://%s:%s@%s:%s/%s' % (config['db_user'],
             config['db_password'], config['db_host'] or 'localhost',

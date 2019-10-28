@@ -13,7 +13,7 @@ def setup(loader, variant=None):
         target = prj_config.get('alembic.setup_do_upgrade')
         if target is None:
             continue
-        elif target is True:
+        if target is True:
             target = 'head'
 
         loader.setup_shell_env()
