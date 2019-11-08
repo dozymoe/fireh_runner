@@ -180,11 +180,12 @@ class Loader():
 
 
     def execute(self, arguments):
+        known, unknown = arguments
         for module in self._modules:
             for function in module.commands:
                 name = function.__name__.replace('_', '-')
 
-                if name != arguments._command_:
+                if name != known._command_:
                     continue
 
                 args = []
@@ -194,7 +195,7 @@ class Loader():
                 params.pop(0)
                 for param in params:
                     if len(param) == 1:
-                        args.extend(getattr(arguments, param[0], []))
+                        args.extend(getattr(known, param[0], []))
                     elif param[0] in ('self', 'loader'):
                         args.append(self)
                     else:
@@ -202,8 +203,9 @@ class Loader():
                             default = param[2]
                         except IndexError:
                             default = None
-                        args.append(getattr(arguments, param[0], default))
+                        args.append(getattr(known, param[0], default))
 
+                args.extend(unknown)
                 return function(self, *args, **kwargs)
 
 
@@ -389,4 +391,4 @@ if __name__ == '__main__':
         loader.register(subparsers, mod)
 
     os.chdir(root_dir)
-    sys.exit(loader.execute(argparse.parse_args()))
+    sys.exit(loader.execute(argparse.parse_known_args()))
