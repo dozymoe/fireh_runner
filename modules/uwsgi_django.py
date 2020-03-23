@@ -31,7 +31,7 @@ def uwsgi_run(loader, project=None, variant=None, *args): #pylint:disable=keywor
         '--master',
         '--die-on-term',
     ]
-    if variant in ('dev', 'devel', 'development'):
+    if not loader.is_production():
         binargs.append('--honour-stdin')
 
     work_dir = config.get('work_dir', project)

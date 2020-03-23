@@ -73,8 +73,15 @@ class Loader():
                 os.environ.get('PROJECT_VARIANT',
                 self.config.get('default_variant', 'default'))
 
+        if self.config.get('variant_is_production') or\
+                variant in ['prod', 'production', 'staging', 'stage']:
+            is_prod = '1'
+        else:
+            is_prod = '0'
+
         os.environ['PROJECT_NAME'] = project
         os.environ['PROJECT_VARIANT'] = variant
+        os.environ['PROJECT_VARIANT_IS_PRODUCTION'] = is_prod
         return project, variant
 
 
@@ -129,6 +136,10 @@ class Loader():
         config = self.config.get('configuration', {})
         config = config.get(variant, {})
         return config.get(project, {})
+
+
+    def is_production(self):
+        return os.environ.get('PROJECT_VARIANT_IS_PRODUCTION') == '1'
 
 
     @staticmethod

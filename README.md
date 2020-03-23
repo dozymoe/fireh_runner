@@ -35,6 +35,7 @@ Then create "etc/runner.json" with the content like this:
         "package_name": "my_blog",
         "default_project": "blog",
         "default_variant": "development",
+        "variant_is_production": false,
 
         "python_version": "3.5",
         "virtualenv_type": "python",

@@ -26,8 +26,12 @@ def setup(loader, variant=None):
     if os.path.exists(package_var_path):
         link_fn(package_var_path, package_path)
 
+    binargs = [composer_bin, 'install']
+    if loader.is_production():
+        binargs.append('--no-dev')
+
     if os.path.exists(package_path):
         print("Setup composer packages")
-        check_call([composer_bin, 'install'], cwd=work_dir)
+        check_call(binargs, cwd=work_dir)
 
     return 0
