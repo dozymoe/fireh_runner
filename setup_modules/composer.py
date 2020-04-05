@@ -1,6 +1,6 @@
 from distutils.spawn import find_executable
 import os
-from shutil import copyfile
+from shutil import copyfile, rmtree
 import sys
 from subprocess import check_call
 
@@ -32,6 +32,11 @@ def setup(loader, variant=None):
 
     if os.path.exists(package_path):
         print("Setup composer packages")
+
+        vendor_dir = os.path.join(work_dir, 'vendor')
+        if os.path.exists(vendor_dir):
+            rmtree(vendor_dir, ignore_errors=True)
+
         check_call(binargs, cwd=work_dir)
 
     return 0

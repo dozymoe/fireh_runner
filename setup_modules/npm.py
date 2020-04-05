@@ -1,5 +1,5 @@
 import os
-from shutil import copyfile
+from shutil import copyfile, rmtree
 from subprocess import check_call
 
 def setup(loader, variant=None):
@@ -19,4 +19,9 @@ def setup(loader, variant=None):
 
     if os.path.exists(package_path):
         print("Setup node_modules")
+
+        mod_dir = os.path.join(work_dir, 'node_modules')
+        if os.path.exists(mod_dir):
+            rmtree(mod_dir, ignore_errors=True)
+
         check_call(['npm', 'install'], cwd=work_dir)
