@@ -28,9 +28,8 @@ def odoo_test(loader, project=None, variant='testing', *args): #pylint:disable=k
     config = loader.get_project_config()
     python_bin = loader.get_python_bin()
 
-    config_file = config.get('config_file')
-    config_file = os.path.join(loader.config['work_dir'],
-            config_file)
+    config_file = os.environ['ODOO_CONFIG_FILE']
+    config_file = os.path.join(loader.config['work_dir'], config_file)
 
     work_dir = config.get('work_dir', project)
     work_dir = loader.expand_path(work_dir)
@@ -52,9 +51,8 @@ def odoo_test_cleardb(loader, project=None, variant='testing', *args): #pylint:d
     config = loader.get_project_config()
     python_bin = loader.get_python_bin()
 
-    config_file = config.get('config_file')
-    config_file = os.path.join(loader.config['work_dir'],
-            config_file)
+    config_file = os.environ['ODOO_CONFIG_FILE']
+    config_file = os.path.join(loader.config['work_dir'], config_file)
 
     work_dir = config.get('work_dir', project)
     work_dir = loader.expand_path(work_dir)
@@ -76,9 +74,8 @@ def odoo_test_shell(loader, project=None, variant='testing', *args): #pylint:dis
     config = loader.get_project_config()
     python_bin = loader.get_python_bin()
 
-    config_file = config.get('config_file')
-    config_file = os.path.join(loader.config['work_dir'],
-            config_file)
+    config_file = os.environ['ODOO_CONFIG_FILE']
+    config_file = os.path.join(loader.config['work_dir'], config_file)
 
     loader.setup_shell_env(config.get('shell_env', {}))
 
@@ -105,9 +102,8 @@ def odoo_test_install(loader, project=None, variant='testing', *args): #pylint:d
     config = loader.get_project_config()
     python_bin = loader.get_python_bin()
 
-    config_file = config.get('config_file')
-    config_file = os.path.join(loader.config['work_dir'],
-            config_file)
+    config_file = os.environ['ODOO_CONFIG_FILE']
+    config_file = os.path.join(loader.config['work_dir'], config_file)
 
     work_dir = config.get('work_dir', project)
     work_dir = loader.expand_path(work_dir)
@@ -129,9 +125,8 @@ def odoo_test_uninstall(loader, project=None, variant='testing', *args): #pylint
     config = loader.get_project_config()
     python_bin = loader.get_python_bin()
 
-    config_file = config.get('config_file')
-    config_file = os.path.join(loader.config['work_dir'],
-            config_file)
+    config_file = os.environ['ODOO_CONFIG_FILE']
+    config_file = os.path.join(loader.config['work_dir'], config_file)
 
     work_dir = config.get('work_dir', project)
     work_dir = loader.expand_path(work_dir)
@@ -153,9 +148,8 @@ def odoo_test_upgrade(loader, project=None, variant='testing', *args): #pylint:d
     config = loader.get_project_config()
     python_bin = loader.get_python_bin()
 
-    config_file = config.get('config_file')
-    config_file = os.path.join(loader.config['work_dir'],
-            config_file)
+    config_file = os.environ['ODOO_CONFIG_FILE']
+    config_file = os.path.join(loader.config['work_dir'], config_file)
 
     work_dir = config.get('work_dir', project)
     work_dir = loader.expand_path(work_dir)
@@ -190,9 +184,8 @@ def odoo_test_list_installed(loader, project=None, variant='testing', *args): #p
     config = loader.get_project_config()
     python_bin = loader.get_python_bin()
 
-    config_file = config.get('config_file')
-    config_file = os.path.join(loader.config['work_dir'],
-            config_file)
+    config_file = os.environ['ODOO_CONFIG_FILE']
+    config_file = os.path.join(loader.config['work_dir'], config_file)
 
     work_dir = config.get('work_dir', project)
     work_dir = loader.expand_path(work_dir)
