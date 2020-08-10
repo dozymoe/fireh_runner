@@ -36,7 +36,7 @@ def odoo_test(loader, project=None, variant='testing', *args): #pylint:disable=k
 
     # bugfix, command like `odoo.py shell`, the word 'shell'  must be mentioned
     # before we define --config, weird
-    binargs = [python_bin, __file__, 'server'] + list(args)
+    binargs = [python_bin, __file__] + list(args)
     if config_file:
         binargs.append('--config=' + config_file)
 
@@ -84,7 +84,7 @@ def odoo_test_shell(loader, project=None, variant='testing', *args): #pylint:dis
 
     # bugfix, command like `odoo.py shell`, the word 'shell'  must be mentioned
     # before we define --config, weird
-    binargs = [python_bin, __file__, 'server']
+    binargs = [python_bin, __file__]
     binargs.append('shell')
     binargs.append('--no-xmlrpc')
     binargs += list(args)
@@ -156,7 +156,7 @@ def odoo_test_upgrade(loader, project=None, variant='testing', *args): #pylint:d
 
     # bugfix, command like `odoo.py shell`, the word 'shell'  must be mentioned
     # before we define --config, weird
-    binargs = [python_bin, __file__, 'server']
+    binargs = [python_bin, __file__]
     binargs.append('--no-xmlrpc')
     binargs.append('--stop-after-init')
     if config_file:

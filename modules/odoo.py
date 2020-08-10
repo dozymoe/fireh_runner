@@ -36,7 +36,7 @@ def odoo(loader, project=None, variant=None, *args): #pylint:disable=keyword-arg
 
     # bugfix, command like `odoo.py shell`, the word 'shell'  must be mentioned
     # before we define --config, weird
-    binargs = [python_bin, __file__, 'server'] + list(args)
+    binargs = [python_bin, __file__] + list(args)
     if config_file:
         binargs.append('--config=' + config_file)
 
@@ -82,7 +82,7 @@ def odoo_shell(loader, project=None, variant=None, *args): #pylint:disable=keywo
 
     # bugfix, command like `odoo.py shell`, the word 'shell'  must be mentioned
     # before we define --config, weird
-    binargs = [python_bin, __file__, 'server']
+    binargs = [python_bin, __file__]
     binargs.append('shell')
     binargs.append('--no-xmlrpc')
     binargs += list(args)
@@ -154,7 +154,7 @@ def odoo_upgrade(loader, project=None, variant=None, *args): #pylint:disable=key
 
     # bugfix, command like `odoo.py shell`, the word 'shell'  must be mentioned
     # before we define --config, weird
-    binargs = [python_bin, __file__, 'server']
+    binargs = [python_bin, __file__]
     binargs.append('--no-xmlrpc')
     binargs.append('--stop-after-init')
     if config_file:
