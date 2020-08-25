@@ -2,9 +2,9 @@
 """
 import os
 
-def python_project(loader, project, variant=None, *args):
+def python_project(loader, project, variant=None, *args): #pylint:disable=keyword-arg-before-vararg
     """Execute project as a python package."""
-    project, variant = loader.setup_project_env(project, variant);
+    project, variant = loader.setup_project_env(project, variant)
     loader.setup_virtualenv()
     loader.setup_shell_env()
     python_bin = loader.get_python_bin()
