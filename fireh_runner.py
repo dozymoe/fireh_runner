@@ -40,7 +40,7 @@ def flatten_dict(prefix, data):
             for child_item in flatten_dict(new_prefix, item):
                 yield child_item
         elif isinstance(item, Sequence) and not is_str:
-            yield (new_prefix, ';'.join(item))
+            yield (new_prefix, os.pathsep.join(item))
         else:
             yield (new_prefix, item)
 

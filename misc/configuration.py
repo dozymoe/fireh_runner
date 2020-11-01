@@ -82,7 +82,7 @@ def load_files_from_shell(setter, adapter=generic_adapter):
      * CONFIG_KEY       (after the file loaded as object, pick this field)
     """
     root_dir = os.environ.get('ROOT_DIR', '')
-    files = os.environ.get('CONFIG_FILENAMES', '').split(';')
+    files = os.environ.get('CONFIG_FILENAMES', '').split(os.pathsep)
     if not files:
         return
 
