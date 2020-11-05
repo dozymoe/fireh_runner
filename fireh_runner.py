@@ -112,7 +112,6 @@ class Loader():
         for key, value in (data or {}).items():
             env[key] = value
         for key, value in flatten_dict('', env):
-            print(value)
             os.environ[key] = value
 
 
