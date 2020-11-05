@@ -5,6 +5,7 @@ try:
     from collections.abc import Mapping, Sequence
 except ImportError:
     from collections import Mapping, Sequence
+from copy import deepcopy
 import ctypes
 from distutils.spawn import find_executable # pylint:disable=no-name-in-module,import-error
 import errno
@@ -20,6 +21,26 @@ try:
     input = raw_input # pylint:disable=redefined-builtin
 except NameError:
     pass
+
+
+def merge_dict(result, *dicts):
+    for data in dicts:
+        for k, v in data.items():
+            if k in result:
+                try:
+                    is_str = isinstance(v, basestring)
+                except NameError:
+                    is_str = isinstance(v, str)
+
+                if isinstance(v, Mapping):
+                    # Will raise exception if result[k] is not a Mapping
+                    merge_dict(result[k], v)
+                elif isinstance(v, Sequence) and not is_str:
+                    result[k].extend(deepcopy(v))
+                else:
+                    result[k] = deepcopy(v)
+            else:
+                result[k] = deepcopy(v)
 
 
 def flatten_dict(prefix, data):
@@ -86,18 +107,12 @@ class Loader():
 
 
     def setup_shell_env(self, data=None):
-        project = os.environ['PROJECT_NAME']
-        variant = os.environ['PROJECT_VARIANT']
-
-        config = self.config.get('configuration', {})
-        config = config.get(variant, {})
+        config = self.get_project_config()
         env = config.get('shell_env', {})
-        config = config.get(project, {})
-        for key, value in config.get('shell_env', {}).items():
-            env[key] = value
         for key, value in (data or {}).items():
             env[key] = value
         for key, value in flatten_dict('', env):
+            print(value)
             os.environ[key] = value
 
 
@@ -135,7 +150,10 @@ class Loader():
 
         config = self.config.get('configuration', {})
         config = config.get(variant, {})
-        return config.get(project, {})
+        conf = {}
+        # empty string is configuration key that applies to all projects
+        merge_dict(conf, config.get('', {}), config.get(project, {}))
+        return conf
 
 
     def is_production(self):
