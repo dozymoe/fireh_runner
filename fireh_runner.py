@@ -111,6 +111,11 @@ class Loader():
         env = config.get('shell_env', {})
         for key, value in (data or {}).items():
             env[key] = value
+
+        # Expand PYTHONPATH relative to project directory
+        for idx, value in enumerate(env.get('PYTHONPATH', [])):
+            env['PYTHONPATH'][idx] = os.path.join(self.config['work_dir'],
+                    value)
         for key, value in flatten_dict('', env):
             os.environ[key] = value
 
