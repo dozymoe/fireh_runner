@@ -22,7 +22,9 @@ def setup(loader, variant):
     if os.path.exists(venv_dir):
         rmtree(venv_dir, ignore_errors=True)
 
-    if venv_type == 'virtualenv':
+    if venv_type == 'venv':
+        check_call([python_bin, '-m', 'venv', venv_dir])
+    elif venv_type == 'virtualenv':
         check_call([python_bin, '-m', 'virtualenv', venv_dir])
 
     loader.setup_virtualenv()
