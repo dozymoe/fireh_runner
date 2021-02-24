@@ -125,25 +125,23 @@ class Loader():
         venv_bin_dir = os.path.join(venv_dir, 'bin')
         venv_type = self.config.get('virtualenv_type', 'python')
 
-        if venv_type == 'virtualenv':
-            activate_file = os.path.join(venv_bin_dir,
-                    'activate_this.py')
+        self._python_bin = None
 
-            try:
-                execfile(activate_file, dict(__file__=activate_file))
-            except NameError:
-                import runpy # pylint:disable=import-outside-toplevel
-                runpy.run_path(activate_file)
+        if venv_type in ('venv', 'virtualenv'):
+            os.environ['VIRTUAL_ENV'] = venv_dir
+            if 'PYTHONHOME' in os.environ:
+                del os.environ['PYTHONHOME']
 
         else:
             # PYTHONUSERBASE is the default
-
             os.environ['PYTHONUSERBASE'] = venv_dir
+            if 'VIRTUAL_ENV' in os.environ:
+                del os.environ['VIRTUAL_ENV']
 
-            paths = os.environ['PATH'].split(os.pathsep)
-            if paths[0] != venv_bin_dir:
-                paths.insert(0, venv_bin_dir)
-                os.environ['PATH'] = os.pathsep.join(paths)
+        paths = os.environ['PATH'].split(os.pathsep)
+        if paths[0] != venv_bin_dir:
+            paths.insert(0, venv_bin_dir)
+            os.environ['PATH'] = os.pathsep.join(paths)
 
         return venv_type
 
@@ -290,8 +288,11 @@ class Loader():
 
         python_bin = 'python' + self.config['python_version']
         self._python_bin = find_executable(python_bin)
+        if not self._python_bin and os.environ.get('VIRTUAL_ENV'):
+            self._python_bin = os.path.join(os.environ['VIRTUAL_ENV'], 'bin',
+                    'python')
         if self._python_bin is None:
-            shellenv_key = python_bin.upper() + '_BIN'
+            shellenv_key = python_bin.replace('.', '_').upper() + '_BIN'
             if shellenv_key in os.environ:
                 self._python_bin = os.environ[shellenv_key]
             else:
