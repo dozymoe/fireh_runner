@@ -12,6 +12,20 @@ def redis(loader, project=None, variant=None, *args): #pylint:disable=keyword-ar
     os.execvp(binargs[0], binargs)
 
 
+def redis_cli(loader, project=None, variant=None, *args): #pylint:disable=keyword-arg-before-vararg
+    project, variant = loader.setup_project_env(project, variant)
+    loader.setup_shell_env()
+    config = loader.get_project_config()
+
+    binargs = [
+        config.get('redis.cli.bin', '/usr/bin/redis-cli'),
+        '-h', os.environ.get('REDIS_LISTEN', '127.0.0.1'),
+        '-p', os.environ.get('REDIS_PORT', 6379),
+    ]
+
+    os.execvp(binargs[0], binargs + list(args))
+
+
 def redis_run(loader, project=None, variant=None, *args): #pylint:disable=keyword-arg-before-vararg
     project, variant = loader.setup_project_env(project, variant)
     loader.setup_shell_env()
@@ -49,4 +63,4 @@ def redis_run(loader, project=None, variant=None, *args): #pylint:disable=keywor
     os.execvp(binargs[0], binargs + list(args))
 
 
-commands = (redis, redis_run)
+commands = (redis, redis_cli, redis_run)
