@@ -38,7 +38,7 @@ def setup(loader, variant):
 
     ## update python pip
 
-    check_call(cmds_pip_install + ['--upgrade', 'pip'])
+    check_call(cmds_pip_install + ['--upgrade', 'pip', 'wheel'])
 
     ## python requirements.txt
 
