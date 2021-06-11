@@ -287,16 +287,16 @@ class Loader():
                 return python_bin
 
         python_bin = 'python' + self.config['python_version']
-        self._python_bin = find_executable(python_bin)
-        if not self._python_bin and os.environ.get('VIRTUAL_ENV'):
-            self._python_bin = os.path.join(os.environ['VIRTUAL_ENV'], 'bin',
-                    'python')
+        shellenv_key = python_bin.replace('.', '_').upper() + '_BIN'
+        if shellenv_key in os.environ:
+            self._python_bin = os.environ[shellenv_key]
+        else:
+            self._python_bin = find_executable(python_bin)
+            if not self._python_bin and os.environ.get('VIRTUAL_ENV'):
+                self._python_bin = os.path.join(os.environ['VIRTUAL_ENV'], 'bin',
+                        'python')
         if self._python_bin is None:
-            shellenv_key = python_bin.replace('.', '_').upper() + '_BIN'
-            if shellenv_key in os.environ:
-                self._python_bin = os.environ[shellenv_key]
-            else:
-                self._python_bin = input(python_bin + ' executable location: ')
+            self._python_bin = input(python_bin + ' executable location: ')
 
         os.environ['PYTHON_BIN'] = self._python_bin
         return self._python_bin

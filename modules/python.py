@@ -2,9 +2,11 @@
 """
 import os
 
-def pip(loader, *args):
+def pip(loader, project=None, variant=None, *args):
     """Install or uninstall python packages."""
+    loader.setup_project_env(project, variant)
     venv_type = loader.setup_virtualenv()
+    loader.setup_shell_env()
     python_bin = loader.get_python_bin()
 
     pip_args = list(args)
