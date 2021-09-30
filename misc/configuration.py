@@ -29,7 +29,7 @@ def generic_adapter(prefix, new, setter):
 def load_configuration_files(files, setter, config_key=None, adapter=None):
 
     def _load(filename, loader):
-        with open(filename, 'r') as filehandle:
+        with open(filename, 'r', encoding='utf-8') as filehandle:
             config = loader(filehandle)
 
         if config_key is not None:
