@@ -112,10 +112,18 @@ class Loader():
         for key, value in (data or {}).items():
             env[key] = value
 
+        # Expand PATH relative to project directory
+        paths = [self.expand_path(x) for x in env.pop('PATH', [])]
+        if paths:
+            paths += os.environ.get('PATH', '').split(os.pathsep)
+            os.environ['PATH'] = os.pathsep.join(paths)
+
         # Expand PYTHONPATH relative to project directory
-        for idx, value in enumerate(env.get('PYTHONPATH', [])):
-            env['PYTHONPATH'][idx] = os.path.join(self.config['work_dir'],
-                    value)
+        paths = [os.expand_path(x) for x in env.pop('PYTHONPATH', [])]
+        if paths:
+            paths += os.environ.get('PYTHONPATH', '').split(os.pathsep)
+            os.environ['PYTHONPATH'] = os.pathsep.join(paths)
+
         for key, value in flatten_dict('', env):
             os.environ[key] = value
 
