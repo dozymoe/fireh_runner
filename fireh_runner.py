@@ -119,7 +119,7 @@ class Loader():
             os.environ['PATH'] = os.pathsep.join(paths)
 
         # Expand PYTHONPATH relative to project directory
-        paths = [os.expand_path(x) for x in env.pop('PYTHONPATH', [])]
+        paths = [self.expand_path(x) for x in env.pop('PYTHONPATH', [])]
         if paths:
             paths += os.environ.get('PYTHONPATH', '').split(os.pathsep)
             os.environ['PYTHONPATH'] = os.pathsep.join(paths)
