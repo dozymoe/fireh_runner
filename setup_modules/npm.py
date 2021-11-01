@@ -24,4 +24,4 @@ def setup(loader, variant=None):
         if os.path.exists(mod_dir):
             rmtree(mod_dir, ignore_errors=True)
 
-        check_call(['npm', '-v', 'install'], cwd=work_dir)
+        check_call(['npm', '--verbose', 'install'], cwd=work_dir)
