@@ -73,6 +73,8 @@ def setup(loader, variant):
     os.chdir(work_dir)
 
     if os.path.exists(wscript_path):
+        loader.setup_project_env(None, None)
         loader.setup_virtualenv()
+        loader.setup_shell_env()
         check_call(loader.get_binargs('waf', 'configure'))
         call(loader.get_binargs('waf'))
