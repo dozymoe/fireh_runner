@@ -24,4 +24,4 @@ def setup(loader, variant=None):
         if os.path.exists(mod_dir):
             rmtree(mod_dir, ignore_errors=True)
 
-        check_call(['yarn', 'install'], cwd=work_dir)
+        check_call(['yarnpkg', 'install'], cwd=work_dir)
