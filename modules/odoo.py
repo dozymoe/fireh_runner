@@ -32,8 +32,7 @@ def odoo(loader, project=None, variant=None, *args): #pylint:disable=keyword-arg
     config = loader.get_project_config()
     python_bin = loader.get_python_bin()
 
-    config_file = os.environ['ODOO_CONFIG_FILE']
-    config_file = os.path.join(loader.config['work_dir'], config_file)
+    config_file = os.environ.get('ODOO_CONFIG_FILE')
 
     work_dir = config.get('work_dir', project)
     work_dir = loader.expand_path(work_dir)
@@ -42,6 +41,7 @@ def odoo(loader, project=None, variant=None, *args): #pylint:disable=keyword-arg
     # before we define --config, weird
     binargs = [python_bin, _get_realfile()] + list(args)
     if config_file:
+        config_file = os.path.join(loader.config['work_dir'], config_file)
         binargs.append('--config=' + config_file)
 
     os.chdir(work_dir)
@@ -55,8 +55,7 @@ def odoo_cleardb(loader, project=None, variant=None, *args): #pylint:disable=key
     config = loader.get_project_config()
     python_bin = loader.get_python_bin()
 
-    config_file = os.environ['ODOO_CONFIG_FILE']
-    config_file = os.path.join(loader.config['work_dir'], config_file)
+    config_file = os.environ.get('ODOO_CONFIG_FILE')
 
     work_dir = config.get('work_dir', project)
     work_dir = loader.expand_path(work_dir)
@@ -65,6 +64,7 @@ def odoo_cleardb(loader, project=None, variant=None, *args): #pylint:disable=key
     # before we define --config, weird
     binargs = [python_bin, _get_realfile(), 'cleardb'] + list(args)
     if config_file:
+        config_file = os.path.join(loader.config['work_dir'], config_file)
         binargs.append('--config=' + config_file)
 
     os.chdir(work_dir)
@@ -78,8 +78,7 @@ def odoo_shell(loader, project=None, variant=None, *args): #pylint:disable=keywo
     config = loader.get_project_config()
     python_bin = loader.get_python_bin()
 
-    config_file = os.environ['ODOO_CONFIG_FILE']
-    config_file = os.path.join(loader.config['work_dir'], config_file)
+    config_file = os.environ.get('ODOO_CONFIG_FILE')
 
     work_dir = config.get('work_dir', project)
     work_dir = loader.expand_path(work_dir)
@@ -88,8 +87,10 @@ def odoo_shell(loader, project=None, variant=None, *args): #pylint:disable=keywo
     # before we define --config, weird
     binargs = [python_bin, _get_realfile(), 'shell'] + list(args)
     if config_file:
+        config_file = os.path.join(loader.config['work_dir'], config_file)
         binargs.append('--config=' + config_file)
 
+    print(binargs)
     os.chdir(work_dir)
     os.execvp(binargs[0], binargs)
 
@@ -101,8 +102,7 @@ def odoo_install(loader, project=None, variant=None, *args): #pylint:disable=key
     config = loader.get_project_config()
     python_bin = loader.get_python_bin()
 
-    config_file = os.environ['ODOO_CONFIG_FILE']
-    config_file = os.path.join(loader.config['work_dir'], config_file)
+    config_file = os.environ.get('ODOO_CONFIG_FILE')
 
     work_dir = config.get('work_dir', project)
     work_dir = loader.expand_path(work_dir)
@@ -111,6 +111,7 @@ def odoo_install(loader, project=None, variant=None, *args): #pylint:disable=key
     # before we define --config, weird
     binargs = [python_bin, _get_realfile(), 'install'] + list(args)
     if config_file:
+        config_file = os.path.join(loader.config['work_dir'], config_file)
         binargs.append('--config=' + config_file)
 
     os.chdir(work_dir)
@@ -124,8 +125,7 @@ def odoo_uninstall(loader, project=None, variant=None, *args): #pylint:disable=k
     config = loader.get_project_config()
     python_bin = loader.get_python_bin()
 
-    config_file = os.environ['ODOO_CONFIG_FILE']
-    config_file = os.path.join(loader.config['work_dir'], config_file)
+    config_file = os.environ.get('ODOO_CONFIG_FILE')
 
     work_dir = config.get('work_dir', project)
     work_dir = loader.expand_path(work_dir)
@@ -134,6 +134,7 @@ def odoo_uninstall(loader, project=None, variant=None, *args): #pylint:disable=k
     # before we define --config, weird
     binargs = [python_bin, _get_realfile(), 'uninstall'] + list(args)
     if config_file:
+        config_file = os.path.join(loader.config['work_dir'], config_file)
         binargs.append('--config=' + config_file)
 
     os.chdir(work_dir)
@@ -147,8 +148,7 @@ def odoo_upgrade(loader, project=None, variant=None, *args): #pylint:disable=key
     config = loader.get_project_config()
     python_bin = loader.get_python_bin()
 
-    config_file = os.environ['ODOO_CONFIG_FILE']
-    config_file = os.path.join(loader.config['work_dir'], config_file)
+    config_file = os.environ.get('ODOO_CONFIG_FILE')
 
     work_dir = config.get('work_dir', project)
     work_dir = loader.expand_path(work_dir)
@@ -157,6 +157,7 @@ def odoo_upgrade(loader, project=None, variant=None, *args): #pylint:disable=key
     # before we define --config, weird
     binargs = [python_bin, _get_realfile(), 'upgrade']
     if config_file:
+        config_file = os.path.join(loader.config['work_dir'], config_file)
         binargs.append('--config=' + config_file)
 
     for arg in args:
@@ -201,8 +202,7 @@ def odoo_script(loader, project=None, variant=None, quiet='y', with_server='y', 
     config = loader.get_project_config()
     python_bin = loader.get_python_bin()
 
-    config_file = os.environ['ODOO_CONFIG_FILE']
-    config_file = os.path.join(loader.config['work_dir'], config_file)
+    config_file = os.environ.get('ODOO_CONFIG_FILE')
 
     work_dir = config.get('work_dir', project)
     work_dir = loader.expand_path(work_dir)
@@ -213,6 +213,7 @@ def odoo_script(loader, project=None, variant=None, quiet='y', with_server='y', 
     # before we define --config, weird
     binargs = [python_bin, _get_realfile(), 'script'] + list(args)
     if config_file:
+        config_file = os.path.join(loader.config['work_dir'], config_file)
         binargs.append('--config=' + config_file)
 
     os.chdir(work_dir)
@@ -272,8 +273,7 @@ def odoo_list_installed(loader, project=None, variant=None, *args): #pylint:disa
     config = loader.get_project_config()
     python_bin = loader.get_python_bin()
 
-    config_file = os.environ['ODOO_CONFIG_FILE']
-    config_file = os.path.join(loader.config['work_dir'], config_file)
+    config_file = os.environ.get('ODOO_CONFIG_FILE')
 
     work_dir = config.get('work_dir', project)
     work_dir = loader.expand_path(work_dir)
@@ -283,6 +283,7 @@ def odoo_list_installed(loader, project=None, variant=None, *args): #pylint:disa
     # before we define --config, weird
     binargs = [python_bin, _get_realfile(), 'list-installed'] + list(args)
     if config_file:
+        config_file = os.path.join(loader.config['work_dir'], config_file)
         binargs.append('--config=' + config_file)
 
     os.chdir(work_dir)
