@@ -7,7 +7,10 @@ except ImportError:
     from collections import Mapping, Sequence
 from copy import deepcopy
 import ctypes
-from distutils.spawn import find_executable # pylint:disable=no-name-in-module,import-error
+try:
+    from shutil import which
+except ImportError:
+    from disutils.spawn import find_executable as which
 import errno
 from importlib import import_module
 from json import load as json_loadf
@@ -299,7 +302,7 @@ class Loader():
         if shellenv_key in os.environ:
             self._python_bin = os.environ[shellenv_key]
         else:
-            self._python_bin = find_executable(python_bin)
+            self._python_bin = which(python_bin)
             if not self._python_bin and os.environ.get('VIRTUAL_ENV'):
                 self._python_bin = os.path.join(os.environ['VIRTUAL_ENV'], 'bin',
                         'python')
