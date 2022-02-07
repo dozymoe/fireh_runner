@@ -138,11 +138,11 @@ class Loader():
 
         self._python_bin = None
 
+        os.environ['USER_BASE'] = venv_dir
         if venv_type in ('venv', 'virtualenv'):
             os.environ['VIRTUAL_ENV'] = venv_dir
             if 'PYTHONHOME' in os.environ:
                 del os.environ['PYTHONHOME']
-
         else:
             # PYTHONUSERBASE is the default
             os.environ['PYTHONUSERBASE'] = venv_dir
