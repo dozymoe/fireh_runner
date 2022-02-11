@@ -40,7 +40,9 @@ def python(loader, project=None, variant=None, *args): #pylint:disable=keyword-a
         config = loader.get_project_config()
         work_dir = config.get('work_dir', project)
         work_dir = loader.expand_path(work_dir)
-        os.chdir(work_dir)
+    else:
+        work_dir = loader.config['current_dir']
+    os.chdir(work_dir)
 
     binargs = [python_bin] + list(args)
     os.execvp(binargs[0], binargs)
