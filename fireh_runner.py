@@ -46,7 +46,7 @@ def merge_dict(result, *dicts):
                 result[k] = deepcopy(v)
 
 
-def flatten_dict(prefix, data):
+def flatten_dict_env(prefix, data):
     # see http://stackoverflow.com/a/6036037
     for key in data:
         item = data[key]
@@ -61,7 +61,7 @@ def flatten_dict(prefix, data):
             is_str = isinstance(item, str)
 
         if isinstance(item, Mapping):
-            for child_item in flatten_dict(new_prefix, item):
+            for child_item in flatten_dict_env(new_prefix, item):
                 yield child_item
         elif isinstance(item, Sequence) and not is_str:
             yield (new_prefix, os.pathsep.join(item))
@@ -127,7 +127,7 @@ class Loader():
             paths += os.environ.get('PYTHONPATH', '').split(os.pathsep)
             os.environ['PYTHONPATH'] = os.pathsep.join(paths)
 
-        for key, value in flatten_dict('', env):
+        for key, value in flatten_dict_env('', env):
             os.environ[key] = value
 
 
@@ -167,6 +167,49 @@ class Loader():
         # empty string is configuration key that applies to all projects
         merge_dict(conf, config.get('', {}), config.get(project, {}))
         return conf
+
+
+    def get_project_config_flatten(self):
+
+        def flatten_list(data):
+            for item in data:
+                try:
+                    is_str = isinstance(item, basestring)
+                except NameError:
+                    is_str = isinstance(item, str)
+
+                if isinstance(item, Mapping):
+                    yield dict(flatten_dict('', item))
+                elif isinstance(item, Sequence) and not is_str:
+                    yield list(flatten_list(item))
+                else:
+                    yield item
+
+
+        def flatten_dict(prefix, data):
+            # see http://stackoverflow.com/a/6036037
+            for key in data:
+                item = data[key]
+                if prefix:
+                    new_prefix = prefix + '.' + key
+                else:
+                    new_prefix = key
+
+                try:
+                    is_str = isinstance(item, basestring)
+                except NameError:
+                    is_str = isinstance(item, str)
+
+                if isinstance(item, Mapping):
+                    for child_item in flatten_dict(new_prefix, item):
+                        yield child_item
+                elif isinstance(item, Sequence) and not is_str:
+                    yield (new_prefix, list(flatten_list(item)))
+                else:
+                    yield (new_prefix, item)
+
+
+        return dict(flatten_dict('', self.get_project_config()))
 
 
     def is_production(self):
@@ -381,6 +424,7 @@ class Loader():
 
             if varargs is not None:
                 yield (varargs,)
+
 
     @staticmethod
     def fix_pathname(dos_path):
