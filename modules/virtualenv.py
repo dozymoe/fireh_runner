@@ -2,7 +2,8 @@
 """
 import os
 
-def bin(loader, project=None, variant=None, *args): #pylint:disable=redefined-builtin,keyword-arg-before-vararg
+def bin(loader, project=None, variant=None, chdir='project',
+        *args): #pylint:disable=redefined-builtin,keyword-arg-before-vararg
     """ Run executable in virtualenv bin
     """
     project, variant = loader.setup_project_env(project, variant)
@@ -10,8 +11,13 @@ def bin(loader, project=None, variant=None, *args): #pylint:disable=redefined-bu
     loader.setup_shell_env()
     config = loader.get_project_config()
 
-    work_dir = config.get('work_dir', project)
-    work_dir = loader.expand_path(work_dir)
+    if chdir == 'project':
+        work_dir = config.get('work_dir', project)
+        work_dir = loader.expand_path(work_dir)
+    elif chdir == 'current':
+        work_dir = loader.config['current_dir']
+    else:
+        work_dir = loader.config['work_dir']
 
     venv_dir = loader.get_virtualenv_dir()
     binargs = [os.path.join(venv_dir, 'bin', args[0])] + list(args[1:])
@@ -19,7 +25,8 @@ def bin(loader, project=None, variant=None, *args): #pylint:disable=redefined-bu
     os.execvp(binargs[0], binargs)
 
 
-def pybin(loader, project=None, variant=None, *args): #pylint:disable=keyword-arg-before-vararg
+def pybin(loader, project=None, variant=None, chdir='project',
+        *args): #pylint:disable=keyword-arg-before-vararg
     """ Run executable in virtualenv bin
     """
     project, variant = loader.setup_project_env(project, variant)
@@ -27,8 +34,13 @@ def pybin(loader, project=None, variant=None, *args): #pylint:disable=keyword-ar
     loader.setup_shell_env()
     config = loader.get_project_config()
 
-    work_dir = config.get('work_dir', project)
-    work_dir = loader.expand_path(work_dir)
+    if chdir == 'project':
+        work_dir = config.get('work_dir', project)
+        work_dir = loader.expand_path(work_dir)
+    elif chdir == 'current':
+        work_dir = loader.config['current_dir']
+    else:
+        work_dir = loader.config['work_dir']
 
     binargs = loader.get_binargs(args[0], *args[1:])
     os.chdir(work_dir)
