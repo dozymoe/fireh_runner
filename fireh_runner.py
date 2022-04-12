@@ -16,6 +16,7 @@ from importlib import import_module
 from json import load as json_loadf
 import inspect
 import os
+import re
 import signal
 from subprocess import Popen
 import sys
@@ -24,6 +25,8 @@ try:
     input = raw_input # pylint:disable=redefined-builtin
 except NameError:
     pass
+
+KNOWN_ENVPATH = ('PATH', 'PYTHONPATH', 'LD_LIBRARY_PATH')
 
 
 def merge_dict(result, *dicts):
@@ -115,17 +118,12 @@ class Loader():
         for key, value in (data or {}).items():
             env[key] = value
 
-        # Expand PATH relative to project directory
-        paths = [self.expand_path(x) for x in env.pop('PATH', [])]
-        if paths:
-            paths += os.environ.get('PATH', '').split(os.pathsep)
-            os.environ['PATH'] = os.pathsep.join(paths)
-
-        # Expand PYTHONPATH relative to project directory
-        paths = [self.expand_path(x) for x in env.pop('PYTHONPATH', [])]
-        if paths:
-            paths += os.environ.get('PYTHONPATH', '').split(os.pathsep)
-            os.environ['PYTHONPATH'] = os.pathsep.join(paths)
+        for PATH in KNOWN_ENVPATH:
+            # Expand PATH relative to project directory
+            paths = [self.expand_path(x) for x in env.pop(PATH, [])]
+            if paths:
+                paths += os.environ.get(PATH, '').split(os.pathsep)
+                os.environ[PATH] = os.pathsep.join(paths)
 
         for key, value in flatten_dict_env('', env):
             os.environ[key] = value
