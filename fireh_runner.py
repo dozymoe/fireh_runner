@@ -447,6 +447,9 @@ if __name__ == '__main__':
 
     runner_dir = os.path.dirname(os.path.realpath(__file__))
     sys.path[0] = root_dir
+    # When fireh_runner is outside the project root dir and you want to use the
+    # builtin modules.
+    sys.path.append(runner_dir)
 
     try:
         if 'RUNNER_CONFIG_FILE' in os.environ:
