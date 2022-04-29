@@ -13,7 +13,6 @@ except ImportError:
     from disutils.spawn import find_executable as which
 import errno
 from importlib import import_module
-from json import load as json_loadf
 import inspect
 import os
 import re
@@ -126,7 +125,7 @@ class Loader():
                 os.environ[PATH] = os.pathsep.join(paths)
 
         for key, value in flatten_dict_env('', env):
-            os.environ[key] = value
+            os.environ[key] = str(value)
 
 
     def setup_virtualenv(self):
@@ -456,13 +455,22 @@ if __name__ == '__main__':
             runner_config_file = os.environ['RUNNER_CONFIG_FILE']
         else:
             runner_config_file = os.path.join(root_dir, 'etc', 'runner.json')
-            os.environ['RUNNER_CONFIG_FILE'] = runner_config_file
+            if not os.path.exists(runner_config_file):
+                runner_config_file = os.path.join(root_dir, 'etc', 'runner.yml')
 
-        with open(runner_config_file) as f:
-            runner_config = json_loadf(f)
+        _, ext = os.path.splitext(runner_config_file)
+        with open(runner_config_file, 'r', encoding='utf-8') as f:
+            if ext == '.json':
+                import json
+                runner_config = json.load(f)
+            elif ext == '.yml' or ext == '.yaml':
+                import yaml
+                runner_config = yaml.load(f, Loader=yaml.Loader)
+            else:
+                raise Exception("Unexpected file format: {}".format(ext))
     except Exception as e: # pylint:disable=broad-except
-        sys.stderr.write('Unable read configuration file etc/runner.json:\n' +\
-                repr(e) + '\n')
+        sys.stderr.write("Unable read configuration file {}:\n{}\n".format(
+                runner_config_file, repr(e)))
 
         sys.exit(-1)
 
