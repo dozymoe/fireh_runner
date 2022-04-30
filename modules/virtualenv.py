@@ -2,48 +2,44 @@
 """
 import os
 
-def bin(loader, project=None, variant=None, chdir='project',
-        *args): #pylint:disable=redefined-builtin,keyword-arg-before-vararg
+def bin(loader, project=None, variant=None, *args): #pylint:disable=redefined-builtin,keyword-arg-before-vararg
     """ Run executable in virtualenv bin
     """
+    project_selected = project is not None
     project, variant = loader.setup_project_env(project, variant)
     loader.setup_virtualenv()
     loader.setup_shell_env()
-    config = loader.get_project_config()
 
-    if chdir == 'project':
+    if project_selected:
+        config = loader.get_project_config()
         work_dir = config.get('work_dir', project)
         work_dir = loader.expand_path(work_dir)
-    elif chdir == 'current':
-        work_dir = loader.config['current_dir']
     else:
-        work_dir = loader.config['work_dir']
+        work_dir = loader.config['current_dir']
+    os.chdir(work_dir)
 
     venv_dir = loader.get_virtualenv_dir()
     binargs = [os.path.join(venv_dir, 'bin', args[0])] + list(args[1:])
-    os.chdir(work_dir)
     os.execvp(binargs[0], binargs)
 
 
-def pybin(loader, project=None, variant=None, chdir='project',
-        *args): #pylint:disable=keyword-arg-before-vararg
+def pybin(loader, project=None, variant=None, *args): #pylint:disable=keyword-arg-before-vararg
     """ Run executable in virtualenv bin
     """
+    project_selected = project is not None
     project, variant = loader.setup_project_env(project, variant)
     loader.setup_virtualenv()
     loader.setup_shell_env()
-    config = loader.get_project_config()
 
-    if chdir == 'project':
+    if project_selected:
+        config = loader.get_project_config()
         work_dir = config.get('work_dir', project)
         work_dir = loader.expand_path(work_dir)
-    elif chdir == 'current':
-        work_dir = loader.config['current_dir']
     else:
-        work_dir = loader.config['work_dir']
+        work_dir = loader.config['current_dir']
+    os.chdir(work_dir)
 
     binargs = loader.get_binargs(args[0], *args[1:])
-    os.chdir(work_dir)
     os.execvp(binargs[0], binargs)
 
 
