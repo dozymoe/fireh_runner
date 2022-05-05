@@ -6,4 +6,8 @@
 ## python
 
 *.pyc
-__pycache__/
+
+
+## vim
+
+*.sw[op]

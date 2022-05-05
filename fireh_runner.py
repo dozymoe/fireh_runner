@@ -92,7 +92,6 @@ class Loader():
 
     def setup_project_env(self, project=None, variant=None):
         project = self.config['project'] = project or\
-                os.environ.get('PROJECT_NAME',
                 self.config.get('default_project'))
 
         variant = self.config['variant'] = variant or\
@@ -351,6 +350,20 @@ class Loader():
 
         os.environ['PYTHON_BIN'] = self._python_bin
         return self._python_bin
+
+
+    def clone_clean_environ(self):
+        """Create a copy of shell environment without our custom variables.
+
+        The purpose is to run another fireh_runner as child process.
+        """
+        clean_env = os.environ.copy()
+        # Let PROJECT_VARIANT cascade to subprocess.
+        for key in ('RUNNER_CONFIG_FILE', 'USER_BASE', 'VIRTUAL_ENV',
+                'PYTHONUSERBASE', 'PYTHON_BIN'):
+            if key in clean_env:
+                del clean_env[key]
+        return clean_env
 
 
     def _win_symlink(self, target, link_name):
