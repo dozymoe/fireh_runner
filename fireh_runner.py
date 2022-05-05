@@ -92,7 +92,7 @@ class Loader():
 
     def setup_project_env(self, project=None, variant=None):
         project = self.config['project'] = project or\
-                self.config.get('default_project'))
+                self.config.get('default_project')
 
         variant = self.config['variant'] = variant or\
                 os.environ.get('PROJECT_VARIANT',
