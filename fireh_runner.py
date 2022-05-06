@@ -452,9 +452,7 @@ class Loader():
 
 if __name__ == '__main__':
     current_dir = os.getcwd()
-    root_dir = os.environ.get('ROOT_DIR', os.path.dirname(
-            os.path.abspath(__file__)))
-
+    root_dir = os.path.dirname(os.path.abspath(__file__))
     root_dir = Loader.fix_pathname(root_dir)
 
     runner_dir = os.path.dirname(os.path.realpath(__file__))
