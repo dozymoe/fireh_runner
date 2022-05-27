@@ -6,6 +6,10 @@ from json import load as json_load
 
 
 def flatten_dict(prefix, data, exceptions=None):
+    """Returns new one level deep dictionary from nested dictionary.
+
+    Nested dictionaries key names will be joined with a '.'.
+    """
     # see http://stackoverflow.com/a/6036037
     if exceptions is None:
         exceptions = []
@@ -22,13 +26,20 @@ def flatten_dict(prefix, data, exceptions=None):
 
 
 def generic_adapter(prefix, new, setter):
+    """Manages how nested dictionary is being loaded
+
+    In this case it will be flatten with key names joined by '.'
+    """
     exceptions = []
     setter.update(flatten_dict(prefix, new, exceptions))
 
 
 def load_configuration_files(files, setter, config_key=None, adapter=None):
-
+    """Collect configuration data from several files
+    """
     def _load(filename, loader):
+        """Import configuration file into a dictionary
+        """
         with open(filename, 'r', encoding='utf-8') as filehandle:
             config = loader(filehandle)
 
