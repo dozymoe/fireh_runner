@@ -26,6 +26,16 @@ def ansible(loader, project=None, variant=None, *args): #pylint:disable=keyword-
         binargs.append('-i')
         binargs.append(loader.expand_path(inventory))
 
+    extra_vars = config.get('ansible.extra_vars')
+    if extra_vars:
+        ev = []
+        for key, val in extra_vars.items():
+            if ' ' in val:
+                ev.append(f'{key}="{val}"')
+            else:
+                ev.append(f'{key}={val}')
+        binargs.append("--extra-vars='%s'" % ' '.join(ev))
+
     binargs += list(args)
 
     os.chdir(work_dir)
@@ -61,6 +71,16 @@ def ansible_playbook(loader, project=None, variant=None, *args): #pylint:disable
     if inventory:
         binargs.append('-i')
         binargs.append(loader.expand_path(inventory))
+
+    extra_vars = config.get('ansible.extra_vars')
+    if extra_vars:
+        ev = []
+        for key, val in extra_vars.items():
+            if ' ' in val:
+                ev.append(f'{key}="{val}"')
+            else:
+                ev.append(f'{key}={val}')
+        binargs.append("--extra-vars='%s'" % ' '.join(ev))
 
     playbook = config.get('ansible.playbook')
     if playbook:
