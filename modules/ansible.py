@@ -28,18 +28,15 @@ def ansible(loader, project=None, variant=None, *args): #pylint:disable=keyword-
 
     extra_vars = config.get('ansible.extra_vars')
     if extra_vars:
-        ev = []
         for key, val in extra_vars.items():
             if ' ' in val:
-                ev.append(f'{key}="{val}"')
-            else:
-                ev.append(f'{key}={val}')
-        binargs.append("--extra-vars='%s'" % ' '.join(ev))
+                val = f"'{val}'"
+            binargs.append(f'--extra-vars={key}={val}')
 
     binargs += list(args)
 
     os.chdir(work_dir)
-    os.execvp(binargs[0], binargs)
+    os.execv(binargs[0], binargs)
 
 
 def ansible_doc(loader, project=None, variant=None, *args): #pylint:disable=keyword-arg-before-vararg
@@ -51,7 +48,7 @@ def ansible_doc(loader, project=None, variant=None, *args): #pylint:disable=keyw
 
     binargs = loader.get_binargs('ansible-doc')
     binargs += list(args)
-    os.execvp(binargs[0], binargs)
+    os.execv(binargs[0], binargs)
 
 
 def ansible_playbook(loader, project=None, variant=None, *args): #pylint:disable=keyword-arg-before-vararg
@@ -74,13 +71,10 @@ def ansible_playbook(loader, project=None, variant=None, *args): #pylint:disable
 
     extra_vars = config.get('ansible.extra_vars')
     if extra_vars:
-        ev = []
         for key, val in extra_vars.items():
             if ' ' in val:
-                ev.append(f'{key}="{val}"')
-            else:
-                ev.append(f'{key}={val}')
-        binargs.append("--extra-vars='%s'" % ' '.join(ev))
+                val = f"'{val}'"
+            binargs.append(f'--extra-vars={key}={val}')
 
     playbook = config.get('ansible.playbook')
     if playbook:
@@ -89,7 +83,7 @@ def ansible_playbook(loader, project=None, variant=None, *args): #pylint:disable
     binargs += list(args)
 
     os.chdir(work_dir)
-    os.execvp(binargs[0], binargs)
+    os.execv(binargs[0], binargs)
 
 
 commands = (ansible, ansible_doc, ansible_playbook)
