@@ -21,8 +21,8 @@ def ansible(loader, project=None, variant=None, *args): #pylint:disable=keyword-
 
     binargs = loader.get_binargs('ansible')
 
-    inventory = config.get('ansible.inventory')
-    if inventory:
+    inventories = loader.ensure_list(config.get('ansible.inventory'))
+    for inventory in inventories:
         binargs.append('-i')
         binargs.append(loader.expand_path(inventory))
 
@@ -64,8 +64,8 @@ def ansible_playbook(loader, project=None, variant=None, *args): #pylint:disable
 
     binargs = loader.get_binargs('ansible-playbook')
 
-    inventory = config.get('ansible.inventory')
-    if inventory:
+    inventories = loader.ensure_list(config.get('ansible.inventory'))
+    for inventory in inventories:
         binargs.append('-i')
         binargs.append(loader.expand_path(inventory))
 

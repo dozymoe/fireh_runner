@@ -450,6 +450,13 @@ class Loader():
         return fixed_path
 
 
+    @staticmethod
+    def ensure_list(value):
+        return value if isinstance(value, list) else \
+                list(value) if isinstance(value, (tuple, set)) else \
+                [] if value is None else [value]
+
+
 if __name__ == '__main__':
     current_dir = os.getcwd()
     root_dir = os.path.dirname(os.path.abspath(__file__))
