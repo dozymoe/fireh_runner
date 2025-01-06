@@ -19,8 +19,7 @@ def flatten_dict(prefix, data, exceptions=None):
         new_prefix = '.'.join([prefix, key])
 
         if isinstance(item, Mapping) and new_prefix not in exceptions:
-            for child_item in flatten_dict(new_prefix, item):
-                yield child_item
+            yield from flatten_dict(new_prefix, item)
         else:
             yield (new_prefix, item)
 
